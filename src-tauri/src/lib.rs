@@ -1,8 +1,10 @@
 mod commands;
+mod models;
 mod store;
 
 use tauri::Manager;
 
+use models::ModelManager;
 use store::settings::{SettingsFile, SettingsStore};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -17,12 +19,21 @@ pub fn run() {
         .setup(|app| {
             let config_dir = app.path().app_config_dir()?;
             app.manage(SettingsStore::load(SettingsFile::new(config_dir)));
+
+            let models_dir = app.path().app_data_dir()?.join("models");
+            app.manage(ModelManager::new(models_dir));
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             commands::settings::settings_get,
             commands::settings::settings_set,
             commands::settings::settings_reset,
+            commands::models::models_list,
+            commands::models::models_dir,
+            commands::models::models_download,
+            commands::models::models_cancel,
+            commands::models::models_delete,
+            commands::models::models_open_folder,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

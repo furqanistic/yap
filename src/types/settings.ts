@@ -5,7 +5,15 @@
 
 export type LanguageMode = "auto" | "preferred" | "translate";
 
-export type TranscriptionModel = "whisper-tiny" | "whisper-base" | "whisper-small" | "whisper-large-turbo";
+/** Ids from the Rust model catalog (`src-tauri/src/models/catalog.rs`). */
+export type TranscriptionModel =
+  | "whisper-tiny"
+  | "whisper-tiny-en"
+  | "whisper-base"
+  | "whisper-base-en"
+  | "whisper-small"
+  | "whisper-small-en"
+  | "whisper-large-turbo";
 
 export interface Settings {
   version: 1;

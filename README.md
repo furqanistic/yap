@@ -10,8 +10,22 @@ AI-powered voice dictation for the desktop, built with [Tauri 2](https://tauri.a
 ## Prerequisites
 
 - [Node.js](https://nodejs.org) 20+
-- [Rust](https://www.rust-lang.org/tools/install) (stable)
-- Tauri system dependencies: https://tauri.app/start/prerequisites/
+- [Rust](https://www.rust-lang.org/tools/install), latest stable (`src-tauri/rust-toolchain.toml` selects it for you)
+- [CMake](https://cmake.org/download/) 3.20+ and a C++ compiler, used to build the bundled speech engine (whisper.cpp)
+- The [Tauri system dependencies](https://tauri.app/start/prerequisites/) for your OS
+
+Per-OS notes:
+
+- **Windows:** [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with the "Desktop development with C++" workload (MSVC and the Windows SDK), plus CMake. WebView2 is preinstalled on Windows 10 and 11.
+- **macOS:** Xcode Command Line Tools (`xcode-select --install`) and CMake (`brew install cmake`).
+- **Linux (Debian/Ubuntu):**
+
+  ```bash
+  sudo apt install build-essential cmake clang libclang-dev libwebkit2gtk-4.1-dev \
+    libappindicator3-dev librsvg2-dev patchelf libssl-dev libxdo-dev libasound2-dev
+  ```
+
+  `libasound2-dev` is for microphone capture and `libxdo-dev` for typing text into other apps.
 
 ## Getting started
 

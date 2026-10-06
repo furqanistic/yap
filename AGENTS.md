@@ -24,5 +24,5 @@ Run these before finishing a change:
 
 ```bash
 npm run build
-cd src-tauri && cargo fmt --check && cargo clippy --all-targets -- -D warnings
+cd src-tauri && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
 ```

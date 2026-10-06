@@ -32,6 +32,9 @@ sha2 = "0.10"
 tokio = { version = "1", features = ["fs", "io-util", "sync", "time", "macros", "rt"] }
 tokio-util = "0.7"
 fs4 = "1"
+cpal = "0.18"
+rubato = "5"
+hound = "3.5"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration

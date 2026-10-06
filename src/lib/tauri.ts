@@ -7,6 +7,7 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getPlatform } from "@/lib/platform";
+import type { AudioLevel, InputDevice, MicTestEnded } from "@/types/audio";
 import type { DiskSpace, ModelEntry, ModelId, ModelProgressEvent, ModelStateEvent } from "@/types/models";
 import type { Settings, SettingsPatch } from "@/types/settings";
 
@@ -17,6 +18,8 @@ export interface EventMap {
   "settings://changed": Settings;
   "models://progress": ModelProgressEvent;
   "models://state": ModelStateEvent;
+  "audio://level": AudioLevel;
+  "audio://test-ended": MicTestEnded;
 }
 
 type EventName = keyof EventMap;
@@ -150,5 +153,32 @@ export const modelsApi = {
   openFolder(): Promise<void> {
     if (!isTauri()) return desktopOnly();
     return invoke("models_open_folder");
+  },
+};
+
+// ---------- Audio ----------
+
+/** Rejects with an `AudioError` (`{ kind, message }`) on failure. */
+export const audioApi = {
+  /** Every input device. Empty outside the desktop app. */
+  listDevices(): Promise<InputDevice[]> {
+    if (!isTauri()) return Promise.resolve([]);
+    return invoke<InputDevice[]>("audio_list_devices");
+  },
+
+  /** Opens the microphone and streams `audio://level` events until stopped. */
+  testStart(deviceId: string): Promise<void> {
+    if (!isTauri()) return Promise.reject({ kind: "other", message: "Only available in the desktop app." });
+    return invoke("audio_test_start", { deviceId });
+  },
+
+  testStop(): Promise<void> {
+    if (!isTauri()) return Promise.resolve();
+    return invoke("audio_test_stop");
+  },
+
+  openPrivacySettings(): Promise<void> {
+    if (!isTauri()) return Promise.resolve();
+    return invoke("audio_open_privacy_settings");
   },
 };

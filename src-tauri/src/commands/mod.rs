@@ -2,5 +2,6 @@
 //! Add one submodule per domain (e.g. `audio`, `transcription`) and register
 //! its commands in `lib.rs` with `tauri::generate_handler!`.
 
+pub mod audio;
 pub mod models;
 pub mod settings;

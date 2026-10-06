@@ -2,15 +2,17 @@ import { Page } from "@/components/page";
 import { SettingRow, SettingsGroup } from "@/components/settings";
 import { Button, Select, ShortcutInput, Switch, type SelectOption } from "@/components/ui";
 import { ActiveModelSelect } from "@/features/model";
-import { useAudioInputDevices } from "@/hooks/useAudioInputDevices";
+import { useAudioDevices } from "@/hooks/useAudioDevices";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useSettings } from "@/hooks/useSettings";
 import type { Settings } from "@/types/settings";
-import { LANGUAGE_MODE_OPTIONS } from "./options";
+import { MicrophoneTest } from "./MicrophoneTest";
+import { deviceLabel, LANGUAGE_MODE_OPTIONS } from "./options";
+import "./GeneralSettings.css";
 
 export function GeneralSettings() {
   const { settings, update: save } = useSettings();
-  const devices = useAudioInputDevices();
+  const { devices, error: devicesError } = useAudioDevices();
   const navigate = useNavigation();
 
   // Wait for the saved values so controls never flash the defaults.
@@ -20,8 +22,15 @@ export function GeneralSettings() {
 
   const microphoneOptions: SelectOption<string>[] = [
     { value: "default", label: "System default" },
-    ...devices.map((device) => ({ value: device.id, label: device.label })),
+    ...devices.map((device) => ({ value: device.id, label: deviceLabel(device.name) })),
   ];
+  const microphoneMissing =
+    settings.microphone !== "default" && !devices.some((device) => device.id === settings.microphone);
+  const microphoneHint = devicesError
+    ? devicesError.message
+    : microphoneMissing
+      ? "Not connected. Yap will use the system default."
+      : undefined;
 
   return (
     <Page title="General" description="Configure how Yap looks and behaves on your system.">
@@ -36,15 +45,24 @@ export function GeneralSettings() {
           )}
         </SettingRow>
 
-        <SettingRow title="Microphone" description="Select the microphone to use for recording.">
+        <SettingRow
+          title="Microphone"
+          description="Select the microphone to use for recording."
+          hint={microphoneHint}
+        >
           {(a11y) => (
             <Select
               value={settings.microphone}
               options={microphoneOptions}
+              placeholder="Not connected"
               onChange={(value) => update("microphone", value)}
               {...a11y}
             />
           )}
+        </SettingRow>
+
+        <SettingRow title="Test microphone" description="Speak and watch the meter move.">
+          {(a11y) => <MicrophoneTest deviceId={settings.microphone} {...a11y} />}
         </SettingRow>
 
         <SettingRow title="Show recording indicator" description="Display a small indicator while recording.">

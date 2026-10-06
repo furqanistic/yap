@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Settings are saved by the Rust backend and survive restarts
 - Shared UI components: Button, Modal, ConfirmDialog, ProgressBar, Toast, EmptyState, TextField and Tag
+- Microphones are listed and recorded natively, so every device shows up without a permission prompt. "Test microphone" shows a live level meter
 - Model page: download, resume, cancel, use and delete Whisper models, with a download window that shows progress, speed and time left. Downloads are checked for damage before use
 - Initial Tauri 2 + React + TypeScript project setup
 - macOS-style sidebar with General, Onboarding, Model, Language, Dictionary, History, Advanced, and About sections

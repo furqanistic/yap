@@ -1,3 +1,4 @@
+mod audio;
 mod commands;
 mod models;
 mod store;
@@ -22,6 +23,7 @@ pub fn run() {
 
             let models_dir = app.path().app_data_dir()?.join("models");
             app.manage(ModelManager::new(models_dir));
+            app.manage(commands::audio::MicTest::default());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -35,6 +37,11 @@ pub fn run() {
             commands::models::models_cancel,
             commands::models::models_delete,
             commands::models::models_open_folder,
+            commands::audio::audio_list_devices,
+            commands::audio::audio_test_start,
+            commands::audio::audio_test_stop,
+            commands::audio::audio_open_privacy_settings,
+            commands::audio::audio_debug_record_wav,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

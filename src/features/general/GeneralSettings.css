@@ -1,0 +1,25 @@
+.mic-test {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.mic-test__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 240px;
+}
+
+.mic-test__meter {
+  flex: 1;
+}
+
+.mic-test__error {
+  max-width: 240px;
+  margin: 0;
+  font-size: 11.5px;
+  text-align: right;
+  color: var(--color-danger-text);
+}

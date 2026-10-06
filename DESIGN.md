@@ -171,6 +171,7 @@ Reuse these before building anything new. They live in [`src/components/`](src/c
 | `TextField` | `ui/` | Free text. `variant="search"` adds a leading magnifier |
 | `Tag` | `ui/` | Small pill label ("Multilingual"). `selected` for "In use" or "Recommended" |
 | `ProgressBar` | `ui/` | Download or task progress. Omit `value` for an indeterminate bar |
+| `LevelMeter` | `ui/` | Live microphone loudness. Pass `rmsToLevel(rms)` for a -60 to 0 dB scale |
 | `Modal` | `ui/` | A focused task or decision on top of the page |
 | `ConfirmDialog` | `ui/` | "Are you sure?" before a destructive or lossy action |
 | `EmptyState` | `ui/` | A list or section with nothing in it yet |
@@ -199,7 +200,7 @@ Reuse these before building anything new. They live in [`src/components/`](src/c
 
 ### Feedback
 
-- `ProgressBar`: 6px pill, `--color-control-off` track, lime fill. Always give it an `aria-label` or `aria-labelledby`.
+- `ProgressBar` and `LevelMeter`: 6px pill, `--color-control-off` track, lime fill. Always give them an `aria-label` or `aria-labelledby`. The level meter fill moves with a 60ms linear transition, turned off under reduced motion.
 - Toasts appear bottom-center, one at a time, and disappear after 4 seconds. Keep them to a few words. Use them for confirmations, not errors that need action.
 - Error text uses `--color-danger-text`.
 

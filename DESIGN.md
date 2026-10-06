@@ -159,6 +159,8 @@ Reuse these before building anything new. They live in [`src/components/`](src/c
 | `Switch` | `ui/` | On/off settings |
 | `Select` | `ui/` | Choosing one option from a list (custom menu with full keyboard support) |
 | `ShortcutInput` | `ui/` | Recording a keyboard shortcut |
+| `Button` | `ui/` | Action trigger for links, clipboard copy, and dialogs |
+
 
 ### Building a settings page
 

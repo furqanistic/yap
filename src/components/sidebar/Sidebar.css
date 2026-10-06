@@ -2,11 +2,28 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
   padding: 0 12px 12px;
   background: var(--sidebar-bg);
   backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
   border-right: 1px solid var(--color-separator);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Discreet scrollbar when height is constrained */
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-separator);
+  border-radius: 4px;
 }
 
 /* The OS already blurs the desktop behind the window */
@@ -58,8 +75,8 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  justify-content: space-between;
   min-height: 0;
+  gap: 8px;
 }
 
 .sidebar__list {
@@ -70,6 +87,19 @@
   padding: 0;
   list-style: none;
 }
+
+.sidebar__list--primary {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.sidebar__list--bottom {
+  flex-shrink: 0;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--color-separator);
+}
+
 
 /* ---------- Item ---------- */
 
@@ -122,6 +152,8 @@
 }
 
 .sidebar-item__label {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

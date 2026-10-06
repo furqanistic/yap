@@ -1,0 +1,1 @@
+export { AboutSettings } from "./AboutSettings";

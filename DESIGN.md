@@ -46,6 +46,14 @@ All colors live as CSS custom properties in [`src/styles/global.css`](src/styles
 | `--color-focus` / `--color-focus-ring` | Neutral keyboard-focus outline and field ring |
 | `--color-menu` / `--color-menu-border` / `--shadow-menu` | Dropdown menus (always opaque, even in glass mode) |
 | `--color-window-close` / `-pressed` / `--color-on-window-close` | Windows close button hover (red by platform convention) |
+| `--color-primary-hover` | Primary button hover (a slightly deeper lime) |
+| `--color-danger` / `-hover` / `--color-on-danger` | Destructive button fill and its text |
+| `--color-danger-text` | Error messages and other red text (lighter in dark mode) |
+| `--color-tag` | Neutral `Tag` background (translucent, works on glass cards) |
+| `--color-backdrop` | Dimmed layer behind a `Modal` |
+| `--color-toast` / `--color-on-toast` | Toast background and text (opaque in every mode) |
+
+Floating surfaces (menus, modals, toasts) are opaque in every mode, glass included, so their tokens have no glass override.
 
 ## Glass (window translucency)
 
@@ -97,15 +105,15 @@ Spacing should come from this scale: **2, 4, 6, 8, 10, 12, 16, 20, 24, 32**.
 | 6px | Keycaps |
 | 7px | Logo tile |
 | 8px | Menu options |
-| 10px | Inputs, selects, sidebar items |
-| 12px | Dropdown menus |
-| 14px | Cards and empty states |
-| 999px | Switch track (pill) |
+| 10px | Inputs, selects, buttons, sidebar items |
+| 12px | Dropdown menus, toasts |
+| 14px | Cards, empty states, modals |
+| 999px | Switch track, tags, progress bar (pills) |
 
 ## Borders, shadows, and depth
 
 - Separate things with **1px `--color-separator` hairlines**, or just whitespace.
-- **No drop shadows** on cards, rows, or buttons. Only two things get a shadow: the switch thumb, and floating menus (`--shadow-menu`), which need to read as sitting above the page.
+- **No drop shadows** on cards, rows, or buttons. Only the switch thumb and floating surfaces get a shadow. Floating surfaces (menus, modals, toasts) use `--shadow-menu` so they read as sitting above the page.
 - **No gradients or inner highlights.** The sidebar used to have glossy icon tiles and gradient pills, and they read as dated. Don't bring them back. The one exception is the soft radial glow behind the sidebar in browser mode (`--glow-*`), which stands in for the desktop wallpaper and disappears in the real glass window.
 
 ## Icons
@@ -121,7 +129,7 @@ We use [Devigner Icons](https://github.com/devigner-ui/icons) (`@devigner-ui/ico
 | Context | Size |
 |---|---|
 | Sidebar item | 18px |
-| Icon inside a field (chevron, keyboard) | 16px |
+| Icon inside a field or button (chevron, keyboard, download) | 16px |
 | Logo glyph | 15px |
 | Empty-state illustration | 26px |
 
@@ -159,6 +167,41 @@ Reuse these before building anything new. They live in [`src/components/`](src/c
 | `Switch` | `ui/` | On/off settings |
 | `Select` | `ui/` | Choosing one option from a list (custom menu with full keyboard support) |
 | `ShortcutInput` | `ui/` | Recording a keyboard shortcut |
+| `Button` | `ui/` | Any action. See [Buttons](#buttons) |
+| `TextField` | `ui/` | Free text. `variant="search"` adds a leading magnifier |
+| `Tag` | `ui/` | Small pill label ("Multilingual"). `selected` for "In use" or "Recommended" |
+| `ProgressBar` | `ui/` | Download or task progress. Omit `value` for an indeterminate bar |
+| `Modal` | `ui/` | A focused task or decision on top of the page |
+| `ConfirmDialog` | `ui/` | "Are you sure?" before a destructive or lossy action |
+| `EmptyState` | `ui/` | A list or section with nothing in it yet |
+| `ToastProvider`, `useToast` | `ui/` | A short, passing message ("Text copied") |
+
+### Buttons
+
+| Variant | Look | Use for |
+|---|---|---|
+| `primary` | Lime fill, `--color-on-primary` text | The one main action in a view or dialog |
+| `secondary` (default) | Field style: tinted fill, hairline border | Most actions, and Cancel in dialogs |
+| `quiet` | No fill until hover | Low-priority actions in rows ("Delete" next to "Use") |
+| `destructive` | Red fill, white text | Confirming something that can't be undone |
+
+- Default size is 34px high, matching inputs. `size="small"` is 28px, for buttons inside setting rows and lists.
+- Radius 10px, 13px/500 text, optional 16px leading icon (stroke 1.75).
+- Use `loading` while an action runs. It shows a spinner and disables the button.
+- At most one `primary` button per view or dialog.
+
+### Modals
+
+- Max width 440px, padding 20px, radius 14px, opaque `--color-menu` surface with `--shadow-menu`. Title 15px/600, body 13px in `--color-text-secondary`, actions right-aligned with the main action last.
+- The backdrop is `--color-backdrop` with **no** `backdrop-filter`.
+- Focus moves into the dialog, is trapped there, and returns to the opener on close. Esc and backdrop clicks close it unless `dismissible={false}`. Modals can stack (a `ConfirmDialog` over a `Modal`); only the top one responds.
+- `ConfirmDialog` with `destructive` focuses Cancel first, so Enter never deletes by accident.
+
+### Feedback
+
+- `ProgressBar`: 6px pill, `--color-control-off` track, lime fill. Always give it an `aria-label` or `aria-labelledby`.
+- Toasts appear bottom-center, one at a time, and disappear after 4 seconds. Keep them to a few words. Use them for confirmations, not errors that need action.
+- Error text uses `--color-danger-text`.
 
 ### Building a settings page
 

@@ -1,0 +1,76 @@
+/* Dimmed layer behind a dialog. No backdrop-filter: it looks muddy over glass */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: var(--color-backdrop);
+  animation: modal-fade 150ms ease;
+}
+
+.modal {
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid var(--color-menu-border);
+  border-radius: 14px;
+  background: var(--color-menu);
+  box-shadow: var(--shadow-menu);
+  color: var(--color-text);
+  animation: modal-in 150ms ease;
+}
+
+.modal:focus {
+  outline: none;
+}
+
+.modal__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.modal__body {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.modal__body p {
+  margin: 0;
+}
+
+.modal__body p + p {
+  margin-top: 8px;
+}
+
+.modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal {
+    animation: none;
+  }
+}

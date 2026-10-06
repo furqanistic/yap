@@ -44,7 +44,7 @@ yap/
 │   │   ├── settings/       Settings groups and rows
 │   │   ├── sidebar/        macOS-style navigation sidebar
 │   │   ├── titlebar/       Custom title bar and window controls
-│   │   └── ui/             Form controls (Switch, Select, ShortcutInput)
+│   │   └── ui/             Controls, buttons, modals, toasts and other building blocks
 │   ├── features/           Feature modules (one folder per feature)
 │   │   └── general/        General settings page
 │   ├── hooks/              Shared React hooks

@@ -66,6 +66,46 @@
   transform: rotate(180deg);
 }
 
+/* ---------- Text field ---------- */
+
+.text-field {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 240px;
+}
+
+.field--text {
+  width: 100%;
+  padding: 0 12px;
+  cursor: text;
+  /* Typed text is content, so people can select it */
+  user-select: text;
+}
+
+.field--text::placeholder {
+  color: var(--color-text-muted);
+}
+
+.field--text::-webkit-search-cancel-button {
+  display: none;
+}
+
+.text-field--search .field--text {
+  padding-left: 32px;
+}
+
+.text-field__icon {
+  position: absolute;
+  left: 10px;
+  /* Above the input, which is positioned and has an opaque background in light mode */
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
 /* ---------- Shortcut recorder ---------- */
 
 .field--shortcut {

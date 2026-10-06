@@ -3,7 +3,7 @@
 use tauri::{AppHandle, State};
 use tauri_plugin_opener::OpenerExt;
 
-use crate::models::download::ModelError;
+use crate::models::download::{DiskSpace, ModelError};
 use crate::models::{ModelEntry, ModelManager};
 
 #[tauri::command]
@@ -14,6 +14,14 @@ pub fn models_list(models: State<'_, ModelManager>) -> Vec<ModelEntry> {
 #[tauri::command]
 pub fn models_dir(models: State<'_, ModelManager>) -> String {
     models.dir().display().to_string()
+}
+
+#[tauri::command]
+pub fn models_disk_space(
+    models: State<'_, ModelManager>,
+    id: String,
+) -> Result<DiskSpace, ModelError> {
+    models.disk_space(&id)
 }
 
 /// Starts a download and returns right away. Watch `models://progress` and

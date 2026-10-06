@@ -1,14 +1,17 @@
 import { Page } from "@/components/page";
 import { SettingRow, SettingsGroup } from "@/components/settings";
-import { Select, ShortcutInput, Switch, type SelectOption } from "@/components/ui";
+import { Button, Select, ShortcutInput, Switch, type SelectOption } from "@/components/ui";
+import { ActiveModelSelect } from "@/features/model";
 import { useAudioInputDevices } from "@/hooks/useAudioInputDevices";
+import { useNavigation } from "@/hooks/useNavigation";
 import { useSettings } from "@/hooks/useSettings";
 import type { Settings } from "@/types/settings";
-import { LANGUAGE_MODE_OPTIONS, MODEL_HINTS, MODEL_OPTIONS } from "./options";
+import { LANGUAGE_MODE_OPTIONS } from "./options";
 
 export function GeneralSettings() {
   const { settings, update: save } = useSettings();
   const devices = useAudioInputDevices();
+  const navigate = useNavigation();
 
   // Wait for the saved values so controls never flash the defaults.
   if (!settings) return null;
@@ -80,18 +83,14 @@ export function GeneralSettings() {
           )}
         </SettingRow>
 
-        <SettingRow
-          title="Model"
-          description="Select the transcription model to use."
-          hint={MODEL_HINTS[settings.model]}
-        >
+        <SettingRow title="Model" description="Select the transcription model to use.">
           {(a11y) => (
-            <Select
-              value={settings.model}
-              options={MODEL_OPTIONS}
-              onChange={(value) => update("model", value)}
-              {...a11y}
-            />
+            <>
+              <ActiveModelSelect {...a11y} />
+              <Button size="small" variant="quiet" onClick={() => navigate("model")}>
+                Manage models
+              </Button>
+            </>
           )}
         </SettingRow>
       </SettingsGroup>

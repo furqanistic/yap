@@ -45,6 +45,8 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  /* Without this the grid item grows to fit its content and the page can't scroll */
+  min-height: 0;
   background: var(--color-surface);
 }
 

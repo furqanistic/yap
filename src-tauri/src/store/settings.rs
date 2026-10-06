@@ -24,6 +24,15 @@ pub enum LanguageMode {
     Translate,
 }
 
+/// Where transcription runs. GPU options arrive in a later version.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ComputeDevice {
+    Auto,
+    Cpu,
+    Gpu,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Settings {
@@ -36,6 +45,7 @@ pub struct Settings {
     pub auto_paste: bool,
     pub language_mode: LanguageMode,
     pub model: String,
+    pub compute_device: ComputeDevice,
     pub launch_at_login: bool,
     pub start_minimized: bool,
 }
@@ -50,6 +60,7 @@ impl Default for Settings {
             auto_paste: true,
             language_mode: LanguageMode::Auto,
             model: "whisper-small".into(),
+            compute_device: ComputeDevice::Auto,
             launch_at_login: true,
             start_minimized: false,
         }

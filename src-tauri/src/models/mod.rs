@@ -15,7 +15,7 @@ use tauri::{AppHandle, Emitter, Manager};
 use tokio_util::sync::CancellationToken;
 
 use catalog::ModelInfo;
-use download::{ModelError, Progress, UrlPolicy};
+use download::{DiskSpace, ModelError, Progress, UrlPolicy};
 
 pub const PROGRESS_EVENT: &str = "models://progress";
 pub const STATE_EVENT: &str = "models://state";
@@ -104,6 +104,14 @@ impl ModelManager {
 
     pub fn dir(&self) -> &Path {
         &self.dir
+    }
+
+    /// Free space compared with what downloading model `id` still needs.
+    pub fn disk_space(&self, id: &str) -> Result<DiskSpace, ModelError> {
+        let model = catalog::find(id).ok_or_else(|| ModelError::UnknownModel(id.into()))?;
+        std::fs::create_dir_all(&self.dir)?;
+        let partial = download::partial_bytes(&self.dir, model).min(model.size_bytes);
+        download::disk_space(&self.dir, model.size_bytes - partial)
     }
 
     pub fn list(&self) -> Vec<ModelEntry> {

@@ -7,7 +7,7 @@
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getPlatform } from "@/lib/platform";
-import type { ModelEntry, ModelId, ModelProgressEvent, ModelStateEvent } from "@/types/models";
+import type { DiskSpace, ModelEntry, ModelId, ModelProgressEvent, ModelStateEvent } from "@/types/models";
 import type { Settings, SettingsPatch } from "@/types/settings";
 
 export { isTauri };
@@ -64,6 +64,7 @@ const BROWSER_DEFAULTS: Settings = {
   autoPaste: true,
   languageMode: "auto",
   model: "whisper-small",
+  computeDevice: "auto",
   launchAtLogin: true,
   startMinimized: false,
 };
@@ -121,6 +122,12 @@ export const modelsApi = {
   dir(): Promise<string> {
     if (!isTauri()) return Promise.resolve("");
     return invoke<string>("models_dir");
+  },
+
+  /** Free space compared with what the download still needs. */
+  diskSpace(id: ModelId): Promise<DiskSpace> {
+    if (!isTauri()) return desktopOnly();
+    return invoke<DiskSpace>("models_disk_space", { id });
   },
 
   /** Starts a download and resolves right away; progress arrives as events. */

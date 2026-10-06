@@ -165,7 +165,7 @@ Reuse these before building anything new. They live in [`src/components/`](src/c
 | `SettingsGroup` | `settings/` | A titled card grouping related settings |
 | `SettingRow` | `settings/` | One setting: title + description on the left, control on the right, optional hint |
 | `Switch` | `ui/` | On/off settings |
-| `Select` | `ui/` | Choosing one option from a list (custom menu with full keyboard support) |
+| `Select` | `ui/` | Choosing one option from a list (custom menu with full keyboard support). Supports a `placeholder` and `disabled` options for things that aren't ready yet |
 | `ShortcutInput` | `ui/` | Recording a keyboard shortcut |
 | `Button` | `ui/` | Any action. See [Buttons](#buttons) |
 | `TextField` | `ui/` | Free text. `variant="search"` adds a leading magnifier |
@@ -219,6 +219,9 @@ Reuse these before building anything new. They live in [`src/components/`](src/c
 - Put the page in `src/features/<section>/` and register it in `SECTION_PAGES` in [`src/app/App.tsx`](src/app/App.tsx).
 - Keep option lists and defaults in an `options.ts` next to the page, not inline in JSX.
 - Option labels must fit the 240px field without truncating. Keep them under ~30 characters.
+- For a read-only value in place of a control ("1.2 GB"), use `<span className="setting-row__value">`.
+- Long descriptions such as folder paths wrap on their own; don't truncate them.
+- Content announced to screen readers but not shown goes in an element with the `sr-only` class.
 
 ## Writing (UI copy)
 

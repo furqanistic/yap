@@ -1,4 +1,4 @@
-import { useEffect, useId, useLayoutEffect, useRef, type ReactNode, type RefObject } from "react";
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, type ReactNode, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import "./Modal.css";
 
@@ -23,13 +23,22 @@ const FOCUSABLE =
  * Open modals, newest last. Only the top one reacts to keys, and everything
  * else (the app and lower modals) is made inert so focus can't leave it.
  */
-const stack: HTMLElement[] = [];
+// Layers are stable per-modal tokens rather than DOM nodes: a modal that
+// mounts already open can run its effects while refs are still detached
+// (React StrictMode re-runs mount effects), and the stack must not miss it.
+interface Layer {
+  element: HTMLElement | null;
+}
+
+const stack: Layer[] = [];
 
 function syncInert() {
   const top = stack[stack.length - 1];
   const root = document.getElementById("root");
   if (root) root.inert = Boolean(top);
-  stack.forEach((layer) => (layer.inert = layer !== top));
+  stack.forEach((layer) => {
+    if (layer.element) layer.element.inert = layer !== top;
+  });
 }
 
 function focusableIn(container: HTMLElement): HTMLElement[] {
@@ -38,37 +47,48 @@ function focusableIn(container: HTMLElement): HTMLElement[] {
 
 export function Modal({ open, onClose, title, children, footer, dismissible = true, initialFocus }: ModalProps) {
   const titleId = useId();
-  const layerRef = useRef<HTMLDivElement>(null);
+  const layer = useRef<Layer>({ element: null }).current;
   const dialogRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
+  const attachLayer = useCallback(
+    (element: HTMLDivElement | null) => {
+      layer.element = element;
+      if (element) syncInert();
+    },
+    [layer],
+  );
+
   // Register as the top layer, move focus in, and restore it on close.
   useLayoutEffect(() => {
-    const layer = layerRef.current;
-    const dialog = dialogRef.current;
-    if (!open || !layer || !dialog) return;
+    if (!open) return;
 
     const opener = document.activeElement as HTMLElement | null;
     stack.push(layer);
     syncInert();
 
-    const target = initialFocus?.current ?? focusableIn(dialog)[0] ?? dialog;
-    target.focus();
+    const focusIn = () => {
+      const dialog = dialogRef.current;
+      if (!dialog || dialog.contains(document.activeElement)) return;
+      (initialFocus?.current ?? focusableIn(dialog)[0] ?? dialog).focus();
+    };
+    focusIn();
+    const frame = requestAnimationFrame(focusIn);
 
     return () => {
+      cancelAnimationFrame(frame);
       stack.splice(stack.indexOf(layer), 1);
       syncInert();
       opener?.focus?.();
     };
-  }, [open]);
+  }, [open, layer]);
 
   useEffect(() => {
     if (!open) return;
     const handleKeyDown = (event: KeyboardEvent) => {
-      const layer = layerRef.current;
       const dialog = dialogRef.current;
-      if (!layer || !dialog || stack[stack.length - 1] !== layer) return;
+      if (!dialog || stack[stack.length - 1] !== layer) return;
 
       if (event.key === "Escape") {
         event.preventDefault();
@@ -96,13 +116,13 @@ export function Modal({ open, onClose, title, children, footer, dismissible = tr
     };
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open, dismissible]);
+  }, [open, dismissible, layer]);
 
   if (!open) return null;
 
   return createPortal(
     <div
-      ref={layerRef}
+      ref={attachLayer}
       className="modal-backdrop"
       onPointerDown={(event) => {
         if (dismissible && event.target === event.currentTarget) onClose();

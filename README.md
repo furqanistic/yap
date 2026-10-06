@@ -60,7 +60,8 @@ yap/
 │   │   ├── titlebar/       Custom title bar and window controls
 │   │   └── ui/             Controls, buttons, modals, toasts and other building blocks
 │   ├── features/           Feature modules (one folder per feature)
-│   │   └── general/        General settings page
+│   │   ├── general/        General settings page
+│   │   └── model/          Model page and the download modal
 │   ├── hooks/              Shared React hooks
 │   ├── lib/                Utilities and Tauri API wrappers
 │   ├── styles/             Global styles and design tokens

@@ -225,13 +225,28 @@ pub fn partial_bytes(dir: &Path, model: &ModelInfo) -> u64 {
         .unwrap_or(0)
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DiskSpace {
+    pub available_bytes: u64,
+    /// What's still to download, plus a safety margin.
+    pub required_bytes: u64,
+}
+
+/// Free space in `dir` compared with what downloading `bytes` needs.
+pub fn disk_space(dir: &Path, bytes: u64) -> Result<DiskSpace, ModelError> {
+    Ok(DiskSpace {
+        available_bytes: fs4::available_space(dir)?,
+        required_bytes: bytes + DISK_MARGIN_BYTES,
+    })
+}
+
 /// Fails with `DiskFull` unless `dir` has room for `bytes` plus a margin.
 pub fn check_disk_space(dir: &Path, bytes: u64) -> Result<(), ModelError> {
-    let available = fs4::available_space(dir)?;
-    let required = bytes + DISK_MARGIN_BYTES;
-    if available < required {
+    let space = disk_space(dir, bytes)?;
+    if space.available_bytes < space.required_bytes {
         return Err(ModelError::DiskFull {
-            needed: Some(required - available),
+            needed: Some(space.required_bytes - space.available_bytes),
         });
     }
     Ok(())

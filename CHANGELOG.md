@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Pages taller than the window couldn't scroll, and the bottom of the sidebar could be cut off
 - Dropdown options were unreadable in dark mode on Windows; dropdowns now use a custom menu
 - Removed the lime focus outline from fields; keyboard focus is now neutral
 
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Settings are saved by the Rust backend and survive restarts
 - Shared UI components: Button, Modal, ConfirmDialog, ProgressBar, Toast, EmptyState, TextField and Tag
+- Model page: download, resume, cancel, use and delete Whisper models, with a download window that shows progress, speed and time left. Downloads are checked for damage before use
 - Initial Tauri 2 + React + TypeScript project setup
 - macOS-style sidebar with General, Onboarding, Model, Language, Dictionary, History, Advanced, and About sections
 - Native window translucency (Acrylic on Windows, vibrancy on macOS) with a custom title bar

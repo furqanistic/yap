@@ -48,6 +48,12 @@ export interface ModelProgressEvent {
   bytesPerSec: number;
 }
 
+export interface DiskSpace {
+  availableBytes: number;
+  /** What's still to download, plus a safety margin. */
+  requiredBytes: number;
+}
+
 export interface ModelStateEvent {
   id: ModelId;
   state: ModelState;

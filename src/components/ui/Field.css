@@ -58,6 +58,10 @@
   text-overflow: ellipsis;
 }
 
+.field__value--placeholder {
+  color: var(--color-text-muted);
+}
+
 .field__chevron {
   transition: transform 150ms ease;
 }

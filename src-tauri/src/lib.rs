@@ -30,6 +30,7 @@ pub fn run() {
             commands::settings::settings_reset,
             commands::models::models_list,
             commands::models::models_dir,
+            commands::models::models_disk_space,
             commands::models::models_download,
             commands::models::models_cancel,
             commands::models::models_delete,

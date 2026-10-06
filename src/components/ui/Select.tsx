@@ -17,12 +17,16 @@ import "./Menu.css";
 export interface SelectOption<T extends string> {
   value: T;
   label: string;
+  /** Shown but can't be chosen, e.g. a feature that isn't ready yet. */
+  disabled?: boolean;
 }
 
 interface SelectProps<T extends string> {
   value: T;
   options: readonly SelectOption<T>[];
   onChange: (value: T) => void;
+  /** Shown when `value` matches none of the options. */
+  placeholder?: string;
   disabled?: boolean;
   "aria-labelledby"?: string;
   "aria-describedby"?: string;
@@ -83,6 +87,7 @@ export function Select<T extends string>({
   value,
   options,
   onChange,
+  placeholder,
   disabled,
   "aria-labelledby": labelledBy,
   "aria-describedby": describedBy,
@@ -99,8 +104,18 @@ export function Select<T extends string>({
   const selected = options[selectedIndex];
   const optionId = (index: number) => `${listId}-option-${index}`;
 
+  const enabledIndexes = options.flatMap((option, index) => (option.disabled ? [] : [index]));
+
+  /** The next enabled option in `direction`, or `from` if there's none. */
+  const step = (from: number, direction: 1 | -1) => {
+    for (let index = from + direction; index >= 0 && index < options.length; index += direction) {
+      if (!options[index].disabled) return index;
+    }
+    return from;
+  };
+
   const openMenu = () => {
-    setActiveIndex(Math.max(selectedIndex, 0));
+    setActiveIndex(selectedIndex >= 0 ? selectedIndex : (enabledIndexes[0] ?? 0));
     setOpen(true);
   };
 
@@ -110,6 +125,7 @@ export function Select<T extends string>({
   };
 
   const choose = (index: number) => {
+    if (options[index]?.disabled) return;
     onChange(options[index].value);
     closeMenu();
   };
@@ -145,19 +161,18 @@ export function Select<T extends string>({
   };
 
   const handleListKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
-    const last = options.length - 1;
     switch (event.key) {
       case "ArrowDown":
-        setActiveIndex((index) => Math.min(index + 1, last));
+        setActiveIndex((index) => step(index, 1));
         break;
       case "ArrowUp":
-        setActiveIndex((index) => Math.max(index - 1, 0));
+        setActiveIndex((index) => step(index, -1));
         break;
       case "Home":
-        setActiveIndex(0);
+        setActiveIndex(enabledIndexes[0] ?? 0);
         break;
       case "End":
-        setActiveIndex(last);
+        setActiveIndex(enabledIndexes[enabledIndexes.length - 1] ?? 0);
         break;
       case "Enter":
       case " ":
@@ -191,7 +206,11 @@ export function Select<T extends string>({
         onClick={() => (open ? closeMenu() : openMenu())}
         onKeyDown={handleTriggerKeyDown}
       >
-        <span className="field__value">{selected?.label}</span>
+        {selected ? (
+          <span className="field__value">{selected.label}</span>
+        ) : (
+          <span className="field__value field__value--placeholder">{placeholder}</span>
+        )}
         <IconChevronDown className="field__icon field__chevron" strokeWidth={2} />
       </button>
 
@@ -214,8 +233,9 @@ export function Select<T extends string>({
                 id={optionId(index)}
                 role="option"
                 aria-selected={index === selectedIndex}
+                aria-disabled={option.disabled || undefined}
                 className={`menu__option${index === activeIndex ? " menu__option--active" : ""}`}
-                onPointerMove={() => setActiveIndex(index)}
+                onPointerMove={() => !option.disabled && setActiveIndex(index)}
                 onClick={() => choose(index)}
               >
                 <span className="menu__label">{option.label}</span>

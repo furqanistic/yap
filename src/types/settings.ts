@@ -15,6 +15,8 @@ export type TranscriptionModel =
   | "whisper-small-en"
   | "whisper-large-turbo";
 
+export type ComputeDevice = "auto" | "cpu" | "gpu";
+
 export interface Settings {
   version: 1;
   /** Key labels as recorded by `ShortcutInput`, e.g. `["Ctrl", "Win"]`. */
@@ -25,6 +27,7 @@ export interface Settings {
   autoPaste: boolean;
   languageMode: LanguageMode;
   model: TranscriptionModel;
+  computeDevice: ComputeDevice;
   launchAtLogin: boolean;
   startMinimized: boolean;
 }

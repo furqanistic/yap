@@ -35,6 +35,10 @@
   font-weight: 500;
 }
 
+.menu__option[aria-disabled="true"] {
+  color: var(--color-text-muted);
+}
+
 .menu__label {
   overflow: hidden;
   white-space: nowrap;

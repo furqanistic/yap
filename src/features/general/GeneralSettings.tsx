@@ -1,23 +1,19 @@
-import { useState } from "react";
 import { Page } from "@/components/page";
 import { SettingRow, SettingsGroup } from "@/components/settings";
 import { Select, ShortcutInput, Switch, type SelectOption } from "@/components/ui";
 import { useAudioInputDevices } from "@/hooks/useAudioInputDevices";
-import {
-  DEFAULT_GENERAL_SETTINGS,
-  LANGUAGE_MODE_OPTIONS,
-  MODEL_HINTS,
-  MODEL_OPTIONS,
-  type GeneralSettingsValues,
-} from "./options";
+import { useSettings } from "@/hooks/useSettings";
+import type { Settings } from "@/types/settings";
+import { LANGUAGE_MODE_OPTIONS, MODEL_HINTS, MODEL_OPTIONS } from "./options";
 
 export function GeneralSettings() {
-  // TODO: persist settings and apply them through the Rust backend.
-  const [settings, setSettings] = useState<GeneralSettingsValues>(DEFAULT_GENERAL_SETTINGS);
+  const { settings, update: save } = useSettings();
   const devices = useAudioInputDevices();
 
-  const update = <K extends keyof GeneralSettingsValues>(key: K, value: GeneralSettingsValues[K]) =>
-    setSettings((current) => ({ ...current, [key]: value }));
+  // Wait for the saved values so controls never flash the defaults.
+  if (!settings) return null;
+
+  const update = <K extends keyof Settings>(key: K, value: Settings[K]) => save({ [key]: value });
 
   const microphoneOptions: SelectOption<string>[] = [
     { value: "default", label: "System default" },
@@ -30,8 +26,8 @@ export function GeneralSettings() {
         <SettingRow title="Push-to-talk shortcut" description="Hold this shortcut to start recording.">
           {(a11y) => (
             <ShortcutInput
-              value={settings.shortcut}
-              onChange={(keys) => update("shortcut", keys)}
+              value={settings.holdShortcut}
+              onChange={(keys) => update("holdShortcut", keys)}
               {...a11y}
             />
           )}

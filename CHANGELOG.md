@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Settings are saved by the Rust backend and survive restarts
 - Initial Tauri 2 + React + TypeScript project setup
 - macOS-style sidebar with General, Onboarding, Model, Language, Dictionary, History, Advanced, and About sections
 - Native window translucency (Acrylic on Windows, vibrancy on macOS) with a custom title bar

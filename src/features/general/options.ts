@@ -1,32 +1,7 @@
 import type { SelectOption } from "@/components/ui";
-import { getPlatform } from "@/lib/platform";
+import type { LanguageMode, TranscriptionModel } from "@/types/settings";
 
-export type LanguageMode = "auto" | "preferred" | "translate";
-export type TranscriptionModel = "whisper-tiny" | "whisper-base" | "whisper-small" | "whisper-large-turbo";
-
-export interface GeneralSettingsValues {
-  shortcut: string[];
-  /** Device id, or "default" for the system microphone. */
-  microphone: string;
-  showRecordingIndicator: boolean;
-  autoPaste: boolean;
-  languageMode: LanguageMode;
-  model: TranscriptionModel;
-  launchAtLogin: boolean;
-  startMinimized: boolean;
-}
-
-export const DEFAULT_GENERAL_SETTINGS: GeneralSettingsValues = {
-  // Ctrl+Space switches input sources on macOS, so default to Option+Space there.
-  shortcut: getPlatform() === "macos" ? ["⌥", "Space"] : ["Ctrl", "Space"],
-  microphone: "default",
-  showRecordingIndicator: true,
-  autoPaste: true,
-  languageMode: "auto",
-  model: "whisper-small",
-  launchAtLogin: true,
-  startMinimized: false,
-};
+// Default values live in Rust (`src-tauri/src/store/settings.rs`).
 
 export const LANGUAGE_MODE_OPTIONS: readonly SelectOption<LanguageMode>[] = [
   { value: "auto", label: "Auto-detect (recommended)" },

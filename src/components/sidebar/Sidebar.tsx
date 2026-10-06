@@ -31,7 +31,7 @@ export function Sidebar({ primaryItems, secondaryItems, activeId, onSelect }: Si
       </div>
 
       <nav className="sidebar__nav" aria-label="Settings">
-        <ul className="sidebar__list">{renderItems(primaryItems)}</ul>
+        <ul className="sidebar__list sidebar__list--primary">{renderItems(primaryItems)}</ul>
         <ul className="sidebar__list sidebar__list--bottom">{renderItems(secondaryItems)}</ul>
       </nav>
     </aside>

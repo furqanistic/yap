@@ -1,0 +1,16 @@
+.about-version-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--color-key);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.about-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

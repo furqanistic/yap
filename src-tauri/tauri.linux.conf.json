@@ -1,0 +1,16 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "app": {
+    "windows": [
+      {
+        "title": "Yap",
+        "width": 960,
+        "height": 640,
+        "minWidth": 760,
+        "minHeight": 520,
+        "decorations": false,
+        "transparent": false
+      }
+    ]
+  }
+}

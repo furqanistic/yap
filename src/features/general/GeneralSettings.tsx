@@ -3,11 +3,13 @@ import { Page } from "@/components/page";
 import { SettingRow, SettingsGroup } from "@/components/settings";
 import { Select, ShortcutInput, Switch, type SelectOption } from "@/components/ui";
 import { useAudioInputDevices } from "@/hooks/useAudioInputDevices";
+import { getPlatform, setWindowAppearance } from "@/lib/platform";
 import {
   DEFAULT_GENERAL_SETTINGS,
   LANGUAGE_MODE_OPTIONS,
   MODEL_HINTS,
   MODEL_OPTIONS,
+  WINDOW_APPEARANCE_OPTIONS,
   type GeneralSettingsValues,
 } from "./options";
 
@@ -26,6 +28,29 @@ export function GeneralSettings() {
 
   return (
     <Page title="General" description="Configure how Yap looks and behaves on your system.">
+      <SettingsGroup title="Appearance">
+        <SettingRow
+          title="Window appearance"
+          description={
+            getPlatform() === "linux"
+              ? "Glass is unavailable on Linux, so Yap stays solid for readability."
+              : "Glass shows a blurred hint of the desktop behind Yap. Solid maximizes readability."
+          }
+        >
+          {(a11y) => (
+            <Select
+              value={settings.windowAppearance}
+              options={WINDOW_APPEARANCE_OPTIONS}
+              onChange={(value) => {
+                update("windowAppearance", value);
+                setWindowAppearance(value);
+              }}
+              {...a11y}
+            />
+          )}
+        </SettingRow>
+      </SettingsGroup>
+
       <SettingsGroup title="Recording">
         <SettingRow title="Push-to-talk shortcut" description="Hold this shortcut to start recording.">
           {(a11y) => (

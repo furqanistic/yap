@@ -81,30 +81,48 @@
 }
 
 /*
- * Native translucency (set by lib/platform.ts inside the Tauri window).
- * The OS blurs the desktop behind the window, so the page stays transparent
- * and each area only adds a light tint on top. The content area is tinted a
+ * Native translucency (set by lib/platform.ts inside the Tauri window on
+ * macOS and Windows only — Linux stays opaque because window effects are
+ * unreliable there). The OS blurs the desktop behind the window, and each
+ * surface adds a strongly opaque tint on top so background text never
+ * competes with Yap's own text (issue #8). The content pane is tinted a
  * little lighter than the sidebar so the two still read as separate panes.
  */
 :root[data-vibrancy="native"] {
   --color-window: transparent;
-  --color-surface: rgba(255, 255, 255, 0.42);
-  --color-card: rgba(255, 255, 255, 0.55);
-  --color-field: rgba(255, 255, 255, 0.65);
+  --color-surface: rgba(255, 255, 255, 0.84);
+  --color-card: rgba(255, 255, 255, 0.88);
+  --color-field: rgba(255, 255, 255, 0.92);
   --color-field-border: rgba(0, 0, 0, 0.08);
   --color-field-border-hover: rgba(0, 0, 0, 0.16);
-  --sidebar-bg: rgba(240, 240, 243, 0.38);
+  --sidebar-bg: rgba(240, 240, 243, 0.8);
+}
+
+/* Windows Acrylic carries grain behind the tint, so it needs a bit more
+   opacity than macOS vibrancy for the same readability. */
+:root[data-platform="windows"][data-vibrancy="native"] {
+  --color-surface: rgba(255, 255, 255, 0.88);
+  --color-card: rgba(255, 255, 255, 0.92);
+  --color-field: rgba(255, 255, 255, 0.95);
+  --sidebar-bg: rgba(240, 240, 243, 0.84);
 }
 
 /* Every token set above needs a dark counterpart here, or it leaks into dark mode */
 @media (prefers-color-scheme: dark) {
   :root[data-vibrancy="native"] {
-    --color-surface: rgba(28, 28, 30, 0.42);
-    --color-card: rgba(255, 255, 255, 0.05);
-    --color-field: rgba(0, 0, 0, 0.22);
+    --color-surface: rgba(28, 28, 30, 0.8);
+    --color-card: rgba(40, 40, 43, 0.86);
+    --color-field: rgba(0, 0, 0, 0.35);
     --color-field-border: rgba(255, 255, 255, 0.09);
     --color-field-border-hover: rgba(255, 255, 255, 0.18);
-    --sidebar-bg: rgba(20, 20, 22, 0.38);
+    --sidebar-bg: rgba(20, 20, 22, 0.78);
+  }
+
+  :root[data-platform="windows"][data-vibrancy="native"] {
+    --color-surface: rgba(28, 28, 30, 0.85);
+    --color-card: rgba(40, 40, 43, 0.9);
+    --color-field: rgba(0, 0, 0, 0.4);
+    --sidebar-bg: rgba(20, 20, 22, 0.83);
   }
 }
 

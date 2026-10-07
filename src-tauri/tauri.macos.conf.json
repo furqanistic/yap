@@ -11,10 +11,7 @@
         "decorations": true,
         "transparent": true,
         "windowEffects": {
-          "effects": [
-            "acrylic",
-            "sidebar"
-          ],
+          "effects": ["sidebar"],
           "state": "followsWindowActiveState"
         },
         "titleBarStyle": "Overlay",

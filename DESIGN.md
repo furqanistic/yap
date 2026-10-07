@@ -51,10 +51,15 @@ All colors live as CSS custom properties in [`src/styles/global.css`](src/styles
 
 Inside the Tauri window, the OS blurs the desktop behind Yap (Acrylic on Windows, vibrancy on macOS). [`src/lib/platform.ts`](src/lib/platform.ts) then sets `data-vibrancy="native"` on `<html>`, and `global.css` swaps opaque tokens for translucent tints.
 
+**Readability comes first (issue #8).** Glass tints must be opaque enough that background text never competes with Yap's own text, even over a dense terminal. The baseline tints are ~0.80–0.92 alpha; the pane structure still shows, but words behind the window don't.
+
 - **Sidebar** is tinted slightly grayer than the **content pane** so the two read as separate panes.
 - **Cards and fields** carry a stronger tint than the pane behind them so text stays readable.
+- **Windows gets +0.04 alpha over macOS** (`:root[data-platform="windows"][data-vibrancy="native"]`): Acrylic adds grain behind the tint, so it needs more opacity for the same readability.
+- **Linux never uses glass.** Window effects are unreliable across DEs and display servers (and `transparent: true` without a working blur is unreadable), so `platform.ts` never sets `data-vibrancy` on Linux and `src-tauri/tauri.linux.conf.json` keeps the window opaque.
+- **Users can force solid windows** on every platform via Settings → General → Window appearance (persisted in `localStorage`, applied by `setWindowAppearance()`).
 - **Don't add `backdrop-filter`** in glass mode. The OS already blurs, and stacking blurs looks muddy and costs performance.
-- **Every token overridden in `:root[data-vibrancy="native"]` must also be overridden in its dark-mode block.** Otherwise the light value leaks into dark mode. This exact bug once made dark-mode fields unreadable.
+- **Every token overridden in `:root[data-vibrancy="native"]` must also be overridden in its dark-mode block** (and in the Windows variant). Otherwise the light value leaks into dark mode. This exact bug once made dark-mode fields unreadable.
 - In a regular browser (no glass), the same tokens fall back to opaque colors and a soft decorative glow behind the sidebar.
 
 ## Typography

@@ -1,5 +1,5 @@
 import type { SelectOption } from "@/components/ui";
-import { getPlatform } from "@/lib/platform";
+import { getPlatform, getWindowAppearance, type WindowAppearance } from "@/lib/platform";
 
 export type LanguageMode = "auto" | "preferred" | "translate";
 export type TranscriptionModel = "whisper-tiny" | "whisper-base" | "whisper-small" | "whisper-large-turbo";
@@ -14,6 +14,7 @@ export interface GeneralSettingsValues {
   model: TranscriptionModel;
   launchAtLogin: boolean;
   startMinimized: boolean;
+  windowAppearance: WindowAppearance;
 }
 
 export const DEFAULT_GENERAL_SETTINGS: GeneralSettingsValues = {
@@ -26,12 +27,18 @@ export const DEFAULT_GENERAL_SETTINGS: GeneralSettingsValues = {
   model: "whisper-small",
   launchAtLogin: true,
   startMinimized: false,
+  windowAppearance: getWindowAppearance(),
 };
 
 export const LANGUAGE_MODE_OPTIONS: readonly SelectOption<LanguageMode>[] = [
   { value: "auto", label: "Auto-detect (recommended)" },
   { value: "preferred", label: "Use my preferred language" },
   { value: "translate", label: "Translate to English" },
+];
+
+export const WINDOW_APPEARANCE_OPTIONS: readonly SelectOption<WindowAppearance>[] = [
+  { value: "glass", label: "Glass (blurred desktop behind Yap)" },
+  { value: "solid", label: "Solid (best readability)" },
 ];
 
 export const MODEL_OPTIONS: readonly SelectOption<TranscriptionModel>[] = [

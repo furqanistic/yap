@@ -7,13 +7,21 @@
   overflow-y: auto;
   border: 1px solid var(--color-menu-border);
   border-radius: 12px;
-  background: var(--color-menu);
+  background: transparent;
   box-shadow: var(--shadow-menu);
   color: var(--color-text);
   font-size: 13px;
   list-style: none;
   outline: none;
   animation: menu-in 120ms ease;
+}
+
+.menu.liquid-glass {
+  --glass-tint: 62%;
+  --glass-frost: 3.4px;
+  overflow: hidden;
+  border-color: var(--color-menu-border);
+  box-shadow: var(--shadow-menu);
 }
 
 .menu__option {

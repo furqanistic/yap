@@ -1,4 +1,5 @@
 import { IconSoundwave } from "@devigner-ui/icons/Soundwave";
+import { LiquidGlassSurface } from "@/components/liquid-glass";
 import type { NavItem, SectionId } from "@/types/navigation";
 import { SidebarItem } from "./SidebarItem";
 import "./Sidebar.css";
@@ -19,7 +20,7 @@ export function Sidebar({ primaryItems, secondaryItems, activeId, onSelect }: Si
     ));
 
   return (
-    <aside className="sidebar">
+    <LiquidGlassSurface as="aside" preset="sidebar" refraction={false} className="sidebar">
       {/* Draggable top strip; on macOS the traffic lights sit here */}
       <div className="sidebar__titlebar" data-tauri-drag-region />
 
@@ -34,6 +35,6 @@ export function Sidebar({ primaryItems, secondaryItems, activeId, onSelect }: Si
         <ul className="sidebar__list">{renderItems(primaryItems)}</ul>
         <ul className="sidebar__list sidebar__list--bottom">{renderItems(secondaryItems)}</ul>
       </nav>
-    </aside>
+    </LiquidGlassSurface>
   );
 }

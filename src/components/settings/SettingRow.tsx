@@ -1,4 +1,5 @@
 import { useId, type ReactNode } from "react";
+import { LiquidGlassSurface } from "@/components/liquid-glass";
 
 /** Ids a control uses to point screen readers at the row's title and description. */
 export interface SettingControlA11y {
@@ -19,7 +20,12 @@ export function SettingRow({ title, description, hint, children }: SettingRowPro
   const descriptionId = useId();
 
   return (
-    <div className="setting-row">
+    <LiquidGlassSurface
+      as="div"
+      preset="clear"
+      refraction={false}
+      className="setting-row"
+    >
       <div className="setting-row__text">
         <div id={titleId} className="setting-row__title">
           {title}
@@ -33,6 +39,6 @@ export function SettingRow({ title, description, hint, children }: SettingRowPro
         {children({ "aria-labelledby": titleId, "aria-describedby": descriptionId })}
         {hint && <p className="setting-row__hint">{hint}</p>}
       </div>
-    </div>
+    </LiquidGlassSurface>
   );
 }

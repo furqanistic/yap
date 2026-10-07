@@ -11,6 +11,7 @@ import {
   type RefObject,
 } from "react";
 import { createPortal } from "react-dom";
+import { LiquidGlassSurface } from "@/components/liquid-glass";
 import "./Field.css";
 import "./Menu.css";
 
@@ -39,6 +40,7 @@ const MENU_PADDING = 10;
  */
 function useMenuPosition(
   triggerRef: RefObject<HTMLElement | null>,
+  menuRef: RefObject<HTMLElement | null>,
   open: boolean,
   optionCount: number,
 ): CSSProperties {
@@ -47,7 +49,7 @@ function useMenuPosition(
   useLayoutEffect(() => {
     if (!open) return;
 
-    const update = () => {
+    const update = (writeToElement = false) => {
       const trigger = triggerRef.current;
       if (!trigger) return;
       const rect = trigger.getBoundingClientRect();
@@ -55,25 +57,47 @@ function useMenuPosition(
       const spaceBelow = window.innerHeight - rect.bottom - VIEWPORT_MARGIN;
       const spaceAbove = rect.top - VIEWPORT_MARGIN;
       const placeAbove = spaceBelow < menuHeight && spaceAbove > spaceBelow;
+      const maxHeight = Math.max(placeAbove ? spaceAbove : spaceBelow, OPTION_HEIGHT * 3);
+
+      if (writeToElement) {
+        const menu = menuRef.current;
+        if (!menu) return;
+        menu.style.left = `${rect.left}px`;
+        menu.style.width = `${rect.width}px`;
+        menu.style.maxHeight = `${maxHeight}px`;
+        menu.style.top = placeAbove ? "" : `${rect.bottom + MENU_GAP}px`;
+        menu.style.bottom = placeAbove ? `${window.innerHeight - rect.top + MENU_GAP}px` : "";
+        return;
+      }
 
       setStyle({
         left: rect.left,
         width: rect.width,
-        maxHeight: Math.max(placeAbove ? spaceAbove : spaceBelow, OPTION_HEIGHT * 3),
+        maxHeight,
         ...(placeAbove
           ? { bottom: window.innerHeight - rect.top + MENU_GAP }
           : { top: rect.bottom + MENU_GAP }),
       });
     };
 
-    update();
-    window.addEventListener("resize", update);
-    window.addEventListener("scroll", update, true);
-    return () => {
-      window.removeEventListener("resize", update);
-      window.removeEventListener("scroll", update, true);
+    let frame = 0;
+    const scheduleUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        update(true);
+      });
     };
-  }, [open, optionCount, triggerRef]);
+
+    update();
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("scroll", scheduleUpdate, { capture: true, passive: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("scroll", scheduleUpdate, true);
+    };
+  }, [open, optionCount, triggerRef, menuRef]);
 
   return style;
 }
@@ -93,7 +117,7 @@ export function Select<T extends string>({
   const listRef = useRef<HTMLUListElement>(null);
   const triggerId = useId();
   const listId = useId();
-  const menuStyle = useMenuPosition(triggerRef, open, options.length);
+  const menuStyle = useMenuPosition(triggerRef, listRef, open, options.length);
 
   const selectedIndex = options.findIndex((option) => option.value === value);
   const selected = options[selectedIndex];
@@ -177,10 +201,12 @@ export function Select<T extends string>({
 
   return (
     <>
-      <button
+      <LiquidGlassSurface
+        as="button"
         ref={triggerRef}
         id={triggerId}
         type="button"
+        preset="dense"
         className={`field field--select${open ? " field--open" : ""}`}
         disabled={disabled}
         aria-haspopup="listbox"
@@ -193,16 +219,18 @@ export function Select<T extends string>({
       >
         <span className="field__value">{selected?.label}</span>
         <IconChevronDown className="field__icon field__chevron" strokeWidth={2} />
-      </button>
+      </LiquidGlassSurface>
 
       {open &&
         createPortal(
-          <ul
+          <LiquidGlassSurface
+            as="ul"
             ref={listRef}
             id={listId}
             className="menu"
             role="listbox"
             tabIndex={-1}
+            preset="floating"
             aria-labelledby={labelledBy}
             aria-activedescendant={optionId(activeIndex)}
             style={menuStyle}
@@ -222,7 +250,7 @@ export function Select<T extends string>({
                 {index === selectedIndex && <IconCheck className="menu__check" strokeWidth={2} />}
               </li>
             ))}
-          </ul>,
+          </LiquidGlassSurface>,
           document.body,
         )}
     </>

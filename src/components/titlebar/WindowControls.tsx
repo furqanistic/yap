@@ -1,5 +1,6 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useWindowMaximized } from "@/hooks/useWindowMaximized";
+import { LiquidGlassSurface } from "@/components/liquid-glass";
 
 /** Windows 11-style minimize / maximize / close buttons. */
 export function WindowControls() {
@@ -8,8 +9,11 @@ export function WindowControls() {
 
   return (
     <div className="window-controls">
-      <button
+      <LiquidGlassSurface
+        as="button"
         type="button"
+        preset="interactive"
+        refraction={false}
         className="window-controls__button"
         aria-label="Minimize"
         onClick={() => appWindow.minimize()}
@@ -17,10 +21,13 @@ export function WindowControls() {
         <svg viewBox="0 0 10 10" aria-hidden="true">
           <path d="M0 5.5h10" />
         </svg>
-      </button>
+      </LiquidGlassSurface>
 
-      <button
+      <LiquidGlassSurface
+        as="button"
         type="button"
+        preset="interactive"
+        refraction={false}
         className="window-controls__button"
         aria-label={maximized ? "Restore" : "Maximize"}
         onClick={() => appWindow.toggleMaximize()}
@@ -32,10 +39,13 @@ export function WindowControls() {
             <path d="M0.5 0.5h9v9h-9z" />
           )}
         </svg>
-      </button>
+      </LiquidGlassSurface>
 
-      <button
+      <LiquidGlassSurface
+        as="button"
         type="button"
+        preset="interactive"
+        refraction={false}
         className="window-controls__button window-controls__button--close"
         aria-label="Close"
         onClick={() => appWindow.close()}
@@ -43,7 +53,7 @@ export function WindowControls() {
         <svg viewBox="0 0 10 10" aria-hidden="true">
           <path d="M0.5 0.5l9 9M9.5 0.5l-9 9" />
         </svg>
-      </button>
+      </LiquidGlassSurface>
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import "./Switch.css";
+import { LiquidGlassSurface } from "@/components/liquid-glass";
 
 interface SwitchProps {
   checked: boolean;
@@ -10,8 +11,11 @@ interface SwitchProps {
 
 export function Switch({ checked, onChange, disabled, ...aria }: SwitchProps) {
   return (
-    <button
+    <LiquidGlassSurface
+      as="button"
       type="button"
+      preset="interactive"
+      refraction={false}
       role="switch"
       aria-checked={checked}
       disabled={disabled}
@@ -20,6 +24,6 @@ export function Switch({ checked, onChange, disabled, ...aria }: SwitchProps) {
       {...aria}
     >
       <span className="switch__thumb" />
-    </button>
+    </LiquidGlassSurface>
   );
 }

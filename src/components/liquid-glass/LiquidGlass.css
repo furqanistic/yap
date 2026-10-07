@@ -1,0 +1,234 @@
+.liquid-glass__definitions {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.liquid-glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--glass-rim-outer);
+  background: transparent;
+  color: var(--color-text);
+  box-shadow:
+    inset 0 1px 0 var(--glass-rim-inner),
+    inset 0 -1px 0 var(--glass-rim-low),
+    0 5px 16px var(--glass-shadow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease,
+    transform 180ms cubic-bezier(0.26, 0.82, 0.36, 1.04);
+}
+
+.liquid-glass::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background: color-mix(in oklab, var(--glass-neutral) var(--glass-tint), transparent);
+  -webkit-backdrop-filter: blur(var(--glass-frost)) saturate(1.16);
+  backdrop-filter: blur(var(--glass-frost)) saturate(1.16);
+  content: "";
+  opacity: var(--glass-sheen-opacity);
+  pointer-events: none;
+  transition:
+    opacity 150ms ease,
+    filter 150ms ease;
+}
+
+.liquid-glass[data-glass-refraction="ready"]::before {
+  -webkit-backdrop-filter: var(--glass-filter) blur(var(--glass-frost)) saturate(1.2);
+  backdrop-filter: var(--glass-filter) blur(var(--glass-frost)) saturate(1.2);
+  opacity: calc(var(--glass-sheen-opacity) + 0.2);
+}
+
+.liquid-glass[data-glass-moving="true"]::before {
+  -webkit-backdrop-filter: blur(var(--glass-frost)) saturate(1.16);
+  backdrop-filter: blur(var(--glass-frost)) saturate(1.16);
+  opacity: calc(var(--glass-sheen-opacity) + 0.05);
+}
+
+.liquid-glass[data-glass-refraction="static"]::before {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.liquid-glass::after {
+  position: absolute;
+  z-index: 2;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(
+    140deg,
+    var(--glass-rim-highlight) 0%,
+    var(--glass-rim-mid) 32%,
+    var(--glass-rim-mid) 68%,
+    var(--glass-rim-glint) 100%
+  );
+  content: "";
+  opacity: var(--glass-rim-opacity);
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  padding: 1px;
+  transition: opacity 150ms ease;
+}
+
+/* Clear window plane: the native Tauri compositor supplies wallpaper frost. */
+.liquid-glass--clear {
+  --glass-tint: 10%;
+  --glass-frost: 1.6px;
+  --glass-sheen-opacity: 0.46;
+  --glass-rim-opacity: 0.54;
+  border-color: color-mix(in oklab, var(--glass-rim-outer) 45%, transparent);
+  box-shadow: inset 0 1px 0 var(--glass-rim-low);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.liquid-glass--regular {
+  --glass-tint: 31%;
+  --glass-frost: 2.4px;
+  --glass-sheen-opacity: 0.64;
+  --glass-rim-opacity: 0.72;
+}
+
+.liquid-glass--dense {
+  --glass-tint: 46%;
+  --glass-frost: 3.4px;
+  --glass-sheen-opacity: 0.72;
+  --glass-rim-opacity: 0.8;
+}
+
+.liquid-glass--interactive {
+  --glass-tint: 24%;
+  --glass-frost: 2.1px;
+  --glass-sheen-opacity: 0.54;
+  --glass-rim-opacity: 0.72;
+  box-shadow: inset 0 1px 0 var(--glass-rim-inner);
+}
+
+.liquid-glass--floating {
+  --glass-tint: 58%;
+  --glass-frost: 4.4px;
+  --glass-sheen-opacity: 0.78;
+  --glass-rim-opacity: 0.86;
+  box-shadow:
+    inset 0 1px 0 var(--glass-rim-inner),
+    inset 0 -1px 0 var(--glass-rim-low),
+    0 8px 24px var(--glass-shadow);
+}
+
+.liquid-glass--sidebar {
+  --glass-tint: 24%;
+  --glass-frost: 2px;
+  --glass-sheen-opacity: 0.5;
+  --glass-rim-opacity: 0.5;
+  border-top: 0;
+  border-bottom: 0;
+  border-left: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.liquid-glass--sidebar,
+.liquid-glass--clear {
+  --glass-frost: 0px;
+}
+
+@supports (corner-shape: superellipse(1.2)) {
+  .liquid-glass--regular,
+  .liquid-glass--dense,
+  .liquid-glass--floating {
+    corner-shape: superellipse(1.18);
+  }
+}
+
+.liquid-glass:is(button, [role="button"]):not(:disabled):hover {
+  --glass-sheen-opacity: 0.78;
+  --glass-rim-opacity: 0.94;
+}
+
+.liquid-glass:is(button, [role="button"]):not(:disabled):hover::before {
+  filter: brightness(1.08);
+}
+
+.liquid-glass:is(button, [role="button"]):not(:disabled):active {
+  transform: scale(1.02);
+}
+
+.liquid-glass:is(button, [role="button"]):focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -3px;
+}
+
+.liquid-glass:is(button, [role="button"]):disabled {
+  opacity: 0.48;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .liquid-glass {
+    background: color-mix(in oklab, var(--glass-neutral) 94%, transparent);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: inset 0 1px 0 var(--glass-rim-inner);
+  }
+
+  .liquid-glass::before {
+    background: none;
+  }
+
+  .liquid-glass::before {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-glass,
+  .liquid-glass::before,
+  .liquid-glass::after,
+  .liquid-glass::before {
+    transition: none;
+  }
+
+  .liquid-glass:is(button, [role="button"]):not(:disabled):active {
+    transform: none;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .liquid-glass--regular {
+    --glass-tint: 38%;
+  }
+
+  .liquid-glass--dense {
+    --glass-tint: 53%;
+  }
+
+  .liquid-glass--interactive {
+    --glass-tint: 29%;
+  }
+
+  .liquid-glass--floating {
+    --glass-tint: 65%;
+  }
+
+  .liquid-glass--sidebar {
+    --glass-tint: 34%;
+  }
+}

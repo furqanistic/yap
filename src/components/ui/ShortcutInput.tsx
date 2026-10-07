@@ -1,6 +1,7 @@
 import { IconKeyboard } from "@devigner-ui/icons/Keyboard";
 import { useState, type KeyboardEvent } from "react";
 import { getPlatform } from "@/lib/platform";
+import { LiquidGlassSurface } from "@/components/liquid-glass";
 import "./Field.css";
 
 const MODIFIER_KEYS = new Set(["Control", "Alt", "Shift", "Meta"]);
@@ -77,15 +78,17 @@ export function ShortcutInput({ value, onChange, ...aria }: ShortcutInputProps) 
   const keys = recording ? pending : value;
 
   return (
-    <button
+    <LiquidGlassSurface
+      as="button"
       type="button"
+      preset="dense"
       className={`field field--shortcut${recording ? " field--recording" : ""}`}
       onClick={() => setRecording(true)}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
       onBlur={stopRecording}
       {...aria}
-    >
+      >
       <span className="field__keys" aria-live="polite">
         {keys.length > 0
           ? keys.map((key) => (
@@ -96,6 +99,6 @@ export function ShortcutInput({ value, onChange, ...aria }: ShortcutInputProps) 
           : recording && <span className="field__placeholder">Press keys…</span>}
       </span>
       <IconKeyboard className="field__icon" strokeWidth={1.75} />
-    </button>
+    </LiquidGlassSurface>
   );
 }

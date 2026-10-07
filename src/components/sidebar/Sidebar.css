@@ -3,14 +3,11 @@
   flex-direction: column;
   height: 100%;
   padding: 0 12px 12px;
-  background: var(--sidebar-bg);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
   border-right: 1px solid var(--color-separator);
 }
 
-/* The OS already blurs the desktop behind the window */
-:root[data-vibrancy="native"] .sidebar {
+.sidebar.liquid-glass--sidebar {
+  background: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -80,7 +77,7 @@
   width: 100%;
   height: 34px;
   padding: 0 10px;
-  border: 0;
+  border: 1px solid transparent;
   border-radius: 10px;
   background: transparent;
   color: var(--color-text-secondary);
@@ -91,7 +88,8 @@
   cursor: default;
   transition:
     background-color 150ms ease,
-    color 150ms ease;
+    color 150ms ease,
+    border-color 150ms ease;
 }
 
 .sidebar-item:hover {
@@ -133,6 +131,16 @@
   background: var(--color-primary-soft);
   color: var(--color-text);
   font-weight: 600;
+}
+
+.sidebar-item--active.liquid-glass {
+  --glass-tint: 19%;
+  --glass-sheen-opacity: 0.78;
+  --glass-rim-opacity: 0.92;
+  border-color: var(--glass-rim-outer);
+  box-shadow:
+    inset 0 1px 0 var(--glass-rim-inner),
+    0 2px 6px var(--glass-shadow);
 }
 
 .sidebar-item--active .sidebar-item__icon,

@@ -1,4 +1,5 @@
 import { useId, type ReactNode } from "react";
+import { LiquidGlassSurface } from "@/components/liquid-glass";
 import "./Settings.css";
 
 interface SettingsGroupProps {
@@ -15,7 +16,9 @@ export function SettingsGroup({ title, children }: SettingsGroupProps) {
       <h2 id={titleId} className="settings-group__title">
         {title}
       </h2>
-      <div className="settings-group__card">{children}</div>
+      <LiquidGlassSurface as="div" preset="regular" className="settings-group__card">
+        {children}
+      </LiquidGlassSurface>
     </section>
   );
 }

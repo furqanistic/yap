@@ -45,10 +45,28 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: var(--color-surface);
+  background: transparent;
 }
 
 .app-shell__content {
   flex: 1;
   overflow-y: auto;
+  min-height: 0;
+  scrollbar-color: transparent transparent;
+}
+
+.app-shell__content::-webkit-scrollbar,
+.app-shell__content::-webkit-scrollbar-track,
+.app-shell__content::-webkit-scrollbar-track-piece,
+.app-shell__content::-webkit-scrollbar-thumb,
+.app-shell__content::-webkit-scrollbar-button,
+.app-shell__content::-webkit-scrollbar-corner {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.app-shell__content:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
 }

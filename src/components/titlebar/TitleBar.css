@@ -23,6 +23,16 @@
   transition: background-color 80ms ease;
 }
 
+.window-controls__button.liquid-glass {
+  --glass-tint: 10%;
+  --glass-sheen-opacity: 0;
+  --glass-rim-opacity: 0;
+  overflow: hidden;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 .window-controls__button svg {
   width: 10px;
   height: 10px;
@@ -44,6 +54,11 @@
   color: var(--color-on-window-close);
 }
 
+.window-controls__button--close:hover::before {
+  background: var(--color-window-close);
+  opacity: 1;
+}
+
 .window-controls__button--close:active {
   background: var(--color-window-close-pressed);
   color: var(--color-on-window-close);
@@ -52,4 +67,8 @@
 .window-controls__button:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: -2px;
+}
+
+.titlebar > .liquid-glass__definitions {
+  display: none;
 }

@@ -1,4 +1,5 @@
 import type { NavItem, SectionId } from "@/types/navigation";
+import { LiquidGlassSurface } from "@/components/liquid-glass";
 
 interface SidebarItemProps {
   item: NavItem;
@@ -10,8 +11,11 @@ export function SidebarItem({ item, active, onSelect }: SidebarItemProps) {
   const Icon = item.icon;
 
   return (
-    <button
+    <LiquidGlassSurface
+      as="button"
       type="button"
+      preset="interactive"
+      refraction={active}
       className={`sidebar-item${active ? " sidebar-item--active" : ""}`}
       aria-current={active ? "page" : undefined}
       onClick={() => onSelect(item.id)}
@@ -20,6 +24,6 @@ export function SidebarItem({ item, active, onSelect }: SidebarItemProps) {
         <Icon className="sidebar-item__glyph" strokeWidth={1.75} />
       </span>
       <span className="sidebar-item__label">{item.label}</span>
-    </button>
+    </LiquidGlassSurface>
   );
 }

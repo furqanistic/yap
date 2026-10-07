@@ -1,6 +1,7 @@
 mod audio;
 mod commands;
 mod hotkey;
+mod inject;
 mod models;
 mod store;
 mod stt;
@@ -87,6 +88,7 @@ pub fn run() {
             commands::stt::stt_status,
             commands::stt::stt_transcribe_wav,
             commands::hotkey::hotkey_status,
+            commands::inject::inject_text,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

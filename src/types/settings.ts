@@ -17,6 +17,8 @@ export type TranscriptionModel =
 
 export type ComputeDevice = "auto" | "cpu" | "gpu";
 
+export type InsertMethod = "auto" | "type" | "paste";
+
 export interface Settings {
   version: 1;
   /** Key labels as recorded by `ShortcutInput`, e.g. `["Ctrl", "Win"]`. */
@@ -28,6 +30,12 @@ export interface Settings {
   languageMode: LanguageMode;
   model: TranscriptionModel;
   computeDevice: ComputeDevice;
+  /** Type short text and paste long text (`auto`), or always one way. */
+  insertMethod: InsertMethod;
+  /** Put back what was on the clipboard after pasting. */
+  restoreClipboard: boolean;
+  /** Add a space after each dictation. */
+  trailingSpace: boolean;
   launchAtLogin: boolean;
   startMinimized: boolean;
 }

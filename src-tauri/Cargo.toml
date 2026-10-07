@@ -38,6 +38,7 @@ hound = "3.5"
 whisper-rs = { version = "0.16", features = ["log_backend"] }
 realfft = "3.5"
 num_cpus = "1"
+arboard = "3"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration

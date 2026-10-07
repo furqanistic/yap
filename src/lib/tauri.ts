@@ -74,6 +74,9 @@ const BROWSER_DEFAULTS: Settings = {
   languageMode: "auto",
   model: "whisper-small",
   computeDevice: "auto",
+  insertMethod: "auto",
+  restoreClipboard: true,
+  trailingSpace: false,
   launchAtLogin: true,
   startMinimized: false,
 };

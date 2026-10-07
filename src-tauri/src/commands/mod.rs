@@ -4,6 +4,7 @@
 
 pub mod audio;
 pub mod hotkey;
+pub mod inject;
 pub mod models;
 pub mod settings;
 pub mod stt;

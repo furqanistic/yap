@@ -33,6 +33,16 @@ pub enum ComputeDevice {
     Gpu,
 }
 
+/// How dictated text gets into the focused app.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum InsertMethod {
+    /// Type short text, paste long text.
+    Auto,
+    Type,
+    Paste,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default, rename_all = "camelCase")]
 pub struct Settings {
@@ -46,6 +56,11 @@ pub struct Settings {
     pub language_mode: LanguageMode,
     pub model: String,
     pub compute_device: ComputeDevice,
+    pub insert_method: InsertMethod,
+    /// Put back whatever was on the clipboard after pasting.
+    pub restore_clipboard: bool,
+    /// Add a space after each dictation, ready for the next one.
+    pub trailing_space: bool,
     pub launch_at_login: bool,
     pub start_minimized: bool,
 }
@@ -61,6 +76,9 @@ impl Default for Settings {
             language_mode: LanguageMode::Auto,
             model: "whisper-small".into(),
             compute_device: ComputeDevice::Auto,
+            insert_method: InsertMethod::Auto,
+            restore_clipboard: true,
+            trailing_space: false,
             launch_at_login: true,
             start_minimized: false,
         }

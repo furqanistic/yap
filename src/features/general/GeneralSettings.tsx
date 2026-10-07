@@ -1,51 +1,75 @@
-import { useState } from "react";
 import { Page } from "@/components/page";
 import { SettingRow, SettingsGroup } from "@/components/settings";
-import { Select, ShortcutInput, Switch, type SelectOption } from "@/components/ui";
-import { useAudioInputDevices } from "@/hooks/useAudioInputDevices";
-import {
-  DEFAULT_GENERAL_SETTINGS,
-  LANGUAGE_MODE_OPTIONS,
-  MODEL_HINTS,
-  MODEL_OPTIONS,
-  type GeneralSettingsValues,
-} from "./options";
+import { Button, Select, ShortcutInput, Switch, type SelectOption } from "@/components/ui";
+import { ActiveModelSelect } from "@/features/model";
+import { useAudioDevices } from "@/hooks/useAudioDevices";
+import { useHotkey } from "@/hooks/useHotkey";
+import { useNavigation } from "@/hooks/useNavigation";
+import { useSettings } from "@/hooks/useSettings";
+import type { Settings } from "@/types/settings";
+import { MicrophoneTest } from "./MicrophoneTest";
+import { deviceLabel, LANGUAGE_MODE_OPTIONS } from "./options";
+import "./GeneralSettings.css";
 
 export function GeneralSettings() {
-  // TODO: persist settings and apply them through the Rust backend.
-  const [settings, setSettings] = useState<GeneralSettingsValues>(DEFAULT_GENERAL_SETTINGS);
-  const devices = useAudioInputDevices();
+  const { settings, update: save } = useSettings();
+  const { devices, error: devicesError } = useAudioDevices();
+  const navigate = useNavigation();
+  const hotkey = useHotkey(settings?.holdShortcut ?? []);
 
-  const update = <K extends keyof GeneralSettingsValues>(key: K, value: GeneralSettingsValues[K]) =>
-    setSettings((current) => ({ ...current, [key]: value }));
+  // Wait for the saved values so controls never flash the defaults.
+  if (!settings) return null;
+
+  const update = <K extends keyof Settings>(key: K, value: Settings[K]) => save({ [key]: value });
 
   const microphoneOptions: SelectOption<string>[] = [
     { value: "default", label: "System default" },
-    ...devices.map((device) => ({ value: device.id, label: device.label })),
+    ...devices.map((device) => ({ value: device.id, label: deviceLabel(device.name) })),
   ];
+  const microphoneMissing =
+    settings.microphone !== "default" && !devices.some((device) => device.id === settings.microphone);
+  const microphoneHint = devicesError
+    ? devicesError.message
+    : microphoneMissing
+      ? "Not connected. Yap will use the system default."
+      : undefined;
 
   return (
     <Page title="General" description="Configure how Yap looks and behaves on your system.">
       <SettingsGroup title="Recording">
-        <SettingRow title="Push-to-talk shortcut" description="Hold this shortcut to start recording.">
+        <SettingRow
+          title="Push-to-talk shortcut"
+          description="Hold this shortcut to start recording."
+          hint={hotkey.status?.error ?? undefined}
+        >
           {(a11y) => (
             <ShortcutInput
-              value={settings.shortcut}
-              onChange={(keys) => update("shortcut", keys)}
+              value={settings.holdShortcut}
+              onChange={(keys) => update("holdShortcut", keys)}
+              pressed={hotkey.pressed}
               {...a11y}
             />
           )}
         </SettingRow>
 
-        <SettingRow title="Microphone" description="Select the microphone to use for recording.">
+        <SettingRow
+          title="Microphone"
+          description="Select the microphone to use for recording."
+          hint={microphoneHint}
+        >
           {(a11y) => (
             <Select
               value={settings.microphone}
               options={microphoneOptions}
+              placeholder="Not connected"
               onChange={(value) => update("microphone", value)}
               {...a11y}
             />
           )}
+        </SettingRow>
+
+        <SettingRow title="Test microphone" description="Speak and watch the meter move.">
+          {(a11y) => <MicrophoneTest deviceId={settings.microphone} {...a11y} />}
         </SettingRow>
 
         <SettingRow title="Show recording indicator" description="Display a small indicator while recording.">
@@ -84,18 +108,14 @@ export function GeneralSettings() {
           )}
         </SettingRow>
 
-        <SettingRow
-          title="Model"
-          description="Select the transcription model to use."
-          hint={MODEL_HINTS[settings.model]}
-        >
+        <SettingRow title="Model" description="Select the transcription model to use.">
           {(a11y) => (
-            <Select
-              value={settings.model}
-              options={MODEL_OPTIONS}
-              onChange={(value) => update("model", value)}
-              {...a11y}
-            />
+            <>
+              <ActiveModelSelect {...a11y} />
+              <Button size="small" variant="quiet" onClick={() => navigate("model")}>
+                Manage models
+              </Button>
+            </>
           )}
         </SettingRow>
       </SettingsGroup>

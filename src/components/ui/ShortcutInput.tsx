@@ -31,6 +31,8 @@ function keyLabel(event: KeyboardEvent): string {
 interface ShortcutInputProps {
   value: string[];
   onChange: (keys: string[]) => void;
+  /** Highlights the keys while the shortcut is being held. */
+  pressed?: boolean;
   "aria-labelledby"?: string;
   "aria-describedby"?: string;
 }
@@ -39,7 +41,7 @@ interface ShortcutInputProps {
  * Click, then press a key combination to record it. Holding only modifiers and
  * releasing them records a modifier-only shortcut. Escape cancels.
  */
-export function ShortcutInput({ value, onChange, ...aria }: ShortcutInputProps) {
+export function ShortcutInput({ value, onChange, pressed, ...aria }: ShortcutInputProps) {
   const [recording, setRecording] = useState(false);
   const [pending, setPending] = useState<string[]>([]);
 
@@ -79,7 +81,7 @@ export function ShortcutInput({ value, onChange, ...aria }: ShortcutInputProps) 
   return (
     <button
       type="button"
-      className={`field field--shortcut${recording ? " field--recording" : ""}`}
+      className={`field field--shortcut${recording ? " field--recording" : ""}${pressed && !recording ? " field--pressed" : ""}`}
       onClick={() => setRecording(true)}
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}

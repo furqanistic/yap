@@ -1,3 +1,10 @@
 //! Tauri commands exposed to the frontend via `invoke`.
 //! Add one submodule per domain (e.g. `audio`, `transcription`) and register
 //! its commands in `lib.rs` with `tauri::generate_handler!`.
+
+pub mod audio;
+pub mod hotkey;
+pub mod inject;
+pub mod models;
+pub mod settings;
+pub mod stt;

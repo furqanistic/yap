@@ -10,8 +10,22 @@ AI-powered voice dictation for the desktop, built with [Tauri 2](https://tauri.a
 ## Prerequisites
 
 - [Node.js](https://nodejs.org) 20+
-- [Rust](https://www.rust-lang.org/tools/install) (stable)
-- Tauri system dependencies: https://tauri.app/start/prerequisites/
+- [Rust](https://www.rust-lang.org/tools/install), latest stable (`src-tauri/rust-toolchain.toml` selects it for you)
+- [CMake](https://cmake.org/download/) 3.20+, a C++ compiler, and libclang, used to build the bundled speech engine (whisper.cpp) and generate its Rust bindings
+- The [Tauri system dependencies](https://tauri.app/start/prerequisites/) for your OS
+
+Per-OS notes:
+
+- **Windows:** [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with the "Desktop development with C++" workload (MSVC and the Windows SDK), CMake, and [LLVM](https://github.com/llvm/llvm-project/releases) for libclang (`winget install LLVM.LLVM`). If CMake or libclang aren't on your `PATH`, set the `CMAKE` and `LIBCLANG_PATH` environment variables (for example in your Cargo `config.toml` under `[env]`). **Also set** `CMAKE_C_FLAGS_RELEASE = "/MD /O2 /Ob2 /DNDEBUG"` and `CMAKE_CXX_FLAGS_RELEASE = "/MD /O2 /Ob2 /DNDEBUG /EHsc /utf-8"` there: without them the speech engine builds unoptimized and transcribes about 30 times slower. WebView2 is preinstalled on Windows 10 and 11.
+- **macOS:** Xcode Command Line Tools (`xcode-select --install`, includes libclang) and CMake (`brew install cmake`).
+- **Linux (Debian/Ubuntu):**
+
+  ```bash
+  sudo apt install build-essential cmake clang libclang-dev libwebkit2gtk-4.1-dev \
+    libappindicator3-dev librsvg2-dev patchelf libssl-dev libxdo-dev libasound2-dev
+  ```
+
+  `libasound2-dev` is for microphone capture and `libxdo-dev` for typing text into other apps.
 
 ## Getting started
 
@@ -27,6 +41,10 @@ Build a production bundle:
 ```bash
 npm run tauri build
 ```
+
+## How hold-to-talk works
+
+Yap detects the push-to-talk shortcut, including modifier-only chords such as Ctrl+Win, with a low-level keyboard hook (`WH_KEYBOARD_LL` on Windows). The hook only watches for the chosen shortcut and never records or sends keystrokes anywhere. Some antivirus tools flag low-level keyboard hooks in general; if yours does, allow Yap.
 
 ## Project structure
 
@@ -44,9 +62,10 @@ yap/
 │   │   ├── settings/       Settings groups and rows
 │   │   ├── sidebar/        macOS-style navigation sidebar
 │   │   ├── titlebar/       Custom title bar and window controls
-│   │   └── ui/             Form controls (Switch, Select, ShortcutInput)
+│   │   └── ui/             Controls, buttons, modals, toasts and other building blocks
 │   ├── features/           Feature modules (one folder per feature)
-│   │   └── general/        General settings page
+│   │   ├── general/        General settings page
+│   │   └── model/          Model page and the download modal
 │   ├── hooks/              Shared React hooks
 │   ├── lib/                Utilities and Tauri API wrappers
 │   ├── styles/             Global styles and design tokens

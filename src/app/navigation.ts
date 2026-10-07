@@ -26,7 +26,7 @@ export const PRIMARY_NAV: NavItem[] = [
   {
     id: "model",
     label: "Model",
-    description: "Choose the AI model used for transcription.",
+    description: "Download and choose the speech model Yap uses.",
     icon: IconStarsMinimalistic,
   },
   {

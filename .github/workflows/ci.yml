@@ -12,22 +12,52 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
-  check:
-    name: Build and lint
+  frontend:
+    name: Frontend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Tauri system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20
           cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check and build
+        run: npm run build
+
+  rust:
+    name: Rust (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Linux system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential cmake clang libclang-dev \
+            libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf \
+            libssl-dev libxdo-dev libasound2-dev
+
+      # Native crates (whisper.cpp) build with CMake and a C++ compiler.
+      # Windows ships MSVC and macOS ships Xcode clang; this pins a known CMake everywhere.
+      - uses: lukka/get-cmake@latest
 
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -37,16 +67,28 @@ jobs:
         with:
           workspaces: src-tauri
 
-      - name: Install frontend dependencies
-        run: npm ci
+      # With the Visual Studio generator, the cmake crate drops CMake's Release
+      # optimization flags, which makes whisper.cpp ~30x slower. Restore them.
+      - name: Optimize whisper.cpp on Windows
+        if: runner.os == 'Windows'
+        run: |
+          echo "CMAKE_C_FLAGS_RELEASE=/MD /O2 /Ob2 /DNDEBUG" >> "$GITHUB_ENV"
+          echo "CMAKE_CXX_FLAGS_RELEASE=/MD /O2 /Ob2 /DNDEBUG /EHsc /utf-8" >> "$GITHUB_ENV"
 
-      - name: Build frontend
-        run: npm run build
+      # `tauri::generate_context!` needs the frontend folder to exist at compile time.
+      - name: Create placeholder frontend build
+        run: mkdir -p dist
 
-      - name: Check Rust formatting
+      - name: Check formatting
+        if: runner.os == 'Linux'
         working-directory: src-tauri
         run: cargo fmt --check
 
-      - name: Lint Rust
+      - name: Lint
         working-directory: src-tauri
         run: cargo clippy --all-targets -- -D warnings
+
+      # Tests cover pure logic plus per-OS code, so run them on every platform.
+      - name: Test
+        working-directory: src-tauri
+        run: cargo test

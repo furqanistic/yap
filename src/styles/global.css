@@ -31,6 +31,18 @@
   --color-window-close: #c42b1c;
   --color-window-close-pressed: #b22a1b;
   --color-on-window-close: #ffffff;
+  /* Destructive actions and error text */
+  --color-danger: #c42b1c;
+  --color-danger-hover: #b22a1b;
+  --color-on-danger: #ffffff;
+  --color-danger-text: #c42b1c;
+  --color-primary-hover: #b0dd08;
+  /* Small pill labels. Translucent, so they also work on glass cards */
+  --color-tag: rgba(0, 0, 0, 0.06);
+  /* Floating surfaces are opaque in every mode, glass included */
+  --color-backdrop: rgba(0, 0, 0, 0.28);
+  --color-toast: #2b2b2f;
+  --color-on-toast: #f5f5f7;
 
   --sidebar-bg: rgba(246, 246, 248, 0.62);
   --glow-primary: rgba(188, 237, 9, 0.35);
@@ -73,6 +85,10 @@
     --color-menu: #2b2b2f;
     --color-menu-border: rgba(255, 255, 255, 0.1);
     --shadow-menu: 0 10px 30px rgba(0, 0, 0, 0.45), 0 1px 3px rgba(0, 0, 0, 0.3);
+    --color-danger-text: #ff6b5e;
+    --color-tag: rgba(255, 255, 255, 0.1);
+    --color-backdrop: rgba(0, 0, 0, 0.5);
+    --color-toast: #3a3a3f;
 
     --sidebar-bg: rgba(38, 38, 42, 0.6);
     --glow-primary: rgba(188, 237, 9, 0.16);
@@ -125,4 +141,17 @@ body {
   overflow: hidden;
   /* Desktop app feel: no text selection on UI chrome */
   user-select: none;
+}
+
+/* Hidden visually but read by screen readers, e.g. live announcements */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }

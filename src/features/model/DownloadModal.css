@@ -1,0 +1,49 @@
+.download-modal__facts {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--color-separator);
+  border-radius: 10px;
+}
+
+.download-modal__facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.download-modal__facts dt {
+  color: var(--color-text-muted);
+}
+
+.download-modal__facts dd {
+  margin: 0;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.modal__body .download-modal__note {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+.modal__body .download-modal__danger,
+.download-modal__facts .download-modal__danger {
+  color: var(--color-danger-text);
+}
+
+.download-modal__progress {
+  margin-top: 12px;
+}
+
+.download-modal__stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}

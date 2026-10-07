@@ -18,6 +18,7 @@ For anything beyond a small fix, please open an issue before starting work so we
 1. Install the prerequisites:
    - [Node.js](https://nodejs.org) 20+
    - [Rust](https://www.rust-lang.org/tools/install) (stable)
+   - CMake and a C++ compiler (see [Prerequisites](README.md#prerequisites) for per-OS details)
    - The [Tauri system dependencies](https://tauri.app/start/prerequisites/) for your OS
 2. Fork and clone the repository:
    ```bash
@@ -43,6 +44,7 @@ For anything beyond a small fix, please open an issue before starting work so we
    cd src-tauri
    cargo fmt --check
    cargo clippy --all-targets -- -D warnings
+   cargo test
    ```
 4. Commit using [Conventional Commits](https://www.conventionalcommits.org/):
    - `feat: add push-to-talk shortcut`

@@ -1,0 +1,113 @@
+/* Physical keycaps for the push-to-talk shortcut (welcome screen).
+   Flat surfaces + a moving shadow layer give the keys their depth;
+   all colors come from tokens so light and dark mode both work. */
+
+.keyboard-keys {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.keyboard-keys__hint {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.keyboard-keys__row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid var(--color-separator);
+  background: var(--color-card);
+}
+
+.keyboard-key {
+  position: relative;
+  height: 48px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 75ms ease-out;
+}
+
+.keyboard-key--sm { width: 44px; }
+.keyboard-key--md { width: 48px; }
+.keyboard-key--lg { width: 84px; }
+.keyboard-key--xl { width: 132px; }
+
+.keyboard-key.is-pressed {
+  transform: translateY(3px);
+}
+
+.keyboard-key:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.keyboard-key__shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: var(--color-key);
+  transition: transform 75ms ease-out;
+}
+
+.keyboard-key:not(.is-pressed) .keyboard-key__shadow {
+  transform: translateY(3px);
+}
+
+.keyboard-key__surface {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--color-field-border);
+  background: var(--color-card);
+  transition:
+    background-color 75ms ease-out,
+    border-color 75ms ease-out;
+}
+
+.keyboard-key.is-pressed .keyboard-key__surface {
+  background: var(--color-hover);
+  border-color: var(--color-field-border-hover);
+}
+
+.keyboard-key__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.keyboard-key__sublabel {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.keyboard-key__text {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-text);
+  transition: color 75ms ease-out;
+}
+
+.keyboard-key.is-pressed .keyboard-key__text {
+  color: var(--color-text-secondary);
+}

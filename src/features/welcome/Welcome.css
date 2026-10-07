@@ -1,0 +1,91 @@
+/* First-launch welcome screen. Centered hero over the window surface;
+   the app shell (sidebar + content) appears after Get Started. */
+
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 100%;
+  padding: 40px 32px;
+  text-align: center;
+  background: var(--color-surface);
+}
+
+.welcome__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 8px;
+  border-radius: 16px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.welcome__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--color-text);
+}
+
+.welcome__subtitle {
+  max-width: 360px;
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+}
+
+.welcome__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.welcome__button {
+  height: 36px;
+  padding: 0 20px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    filter 150ms ease;
+}
+
+.welcome__button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.welcome__button--primary {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.welcome__button--primary:hover {
+  filter: brightness(1.05);
+}
+
+.welcome__button--primary:active {
+  filter: brightness(0.97);
+}
+
+.welcome__button--secondary {
+  background: var(--color-card);
+  color: var(--color-text);
+  border-color: var(--color-field-border);
+}
+
+.welcome__button--secondary:hover {
+  background: var(--color-hover);
+}

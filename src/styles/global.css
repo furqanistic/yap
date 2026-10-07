@@ -23,7 +23,7 @@
   /* Keyboard focus is neutral, never lime */
   --color-focus: rgba(0, 0, 0, 0.4);
   --color-focus-ring: rgba(0, 0, 0, 0.08);
-  /* Floating menus (dropdowns) stay opaque, even in glass mode */
+  /* Fallback menu color, border, and shadow for the dense floating glass preset */
   --color-menu: #ffffff;
   --color-menu-border: rgba(0, 0, 0, 0.08);
   --shadow-menu: 0 10px 30px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -35,6 +35,16 @@
   --sidebar-bg: rgba(246, 246, 248, 0.62);
   --glow-primary: rgba(188, 237, 9, 0.35);
   --glow-secondary: rgba(120, 140, 255, 0.18);
+
+  /* Liquid Glass materials: neutral optics inherit the active theme. */
+  --glass-neutral: #f2f2f5;
+  --glass-rim-highlight: rgba(255, 255, 255, 0.78);
+  --glass-rim-mid: rgba(255, 255, 255, 0.22);
+  --glass-rim-glint: rgba(255, 255, 255, 0.58);
+  --glass-rim-inner: rgba(255, 255, 255, 0.64);
+  --glass-rim-low: rgba(255, 255, 255, 0.18);
+  --glass-rim-outer: rgba(35, 35, 40, 0.14);
+  --glass-shadow: rgba(42, 44, 50, 0.08);
 
   font-family:
     -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI",
@@ -77,6 +87,14 @@
     --sidebar-bg: rgba(38, 38, 42, 0.6);
     --glow-primary: rgba(188, 237, 9, 0.16);
     --glow-secondary: rgba(120, 140, 255, 0.12);
+    --glass-neutral: #1c1c1f;
+    --glass-rim-highlight: rgba(255, 255, 255, 0.44);
+    --glass-rim-mid: rgba(255, 255, 255, 0.12);
+    --glass-rim-glint: rgba(255, 255, 255, 0.32);
+    --glass-rim-inner: rgba(255, 255, 255, 0.34);
+    --glass-rim-low: rgba(255, 255, 255, 0.1);
+    --glass-rim-outer: rgba(0, 0, 0, 0.32);
+    --glass-shadow: rgba(0, 0, 0, 0.18);
   }
 }
 
@@ -88,23 +106,23 @@
  */
 :root[data-vibrancy="native"] {
   --color-window: transparent;
-  --color-surface: rgba(255, 255, 255, 0.42);
-  --color-card: rgba(255, 255, 255, 0.55);
-  --color-field: rgba(255, 255, 255, 0.65);
+  --color-surface: rgba(255, 255, 255, 0.12);
+  --color-card: rgba(255, 255, 255, 0.18);
+  --color-field: rgba(255, 255, 255, 0.22);
   --color-field-border: rgba(0, 0, 0, 0.08);
   --color-field-border-hover: rgba(0, 0, 0, 0.16);
-  --sidebar-bg: rgba(240, 240, 243, 0.38);
+  --sidebar-bg: rgba(240, 240, 243, 0.22);
 }
 
 /* Every token set above needs a dark counterpart here, or it leaks into dark mode */
 @media (prefers-color-scheme: dark) {
   :root[data-vibrancy="native"] {
-    --color-surface: rgba(28, 28, 30, 0.42);
-    --color-card: rgba(255, 255, 255, 0.05);
-    --color-field: rgba(0, 0, 0, 0.22);
+    --color-surface: rgba(28, 28, 30, 0.12);
+    --color-card: rgba(255, 255, 255, 0.08);
+    --color-field: rgba(0, 0, 0, 0.16);
     --color-field-border: rgba(255, 255, 255, 0.09);
     --color-field-border-hover: rgba(255, 255, 255, 0.18);
-    --sidebar-bg: rgba(20, 20, 22, 0.38);
+    --sidebar-bg: rgba(20, 20, 22, 0.24);
   }
 }
 
@@ -125,4 +143,22 @@ body {
   overflow: hidden;
   /* Desktop app feel: no text selection on UI chrome */
   user-select: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --color-window: #ececee;
+    --color-surface: #fbfbfc;
+  }
+
+  :root[data-vibrancy="native"] .app-shell {
+    background: var(--color-window);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) and (prefers-color-scheme: dark) {
+  :root {
+    --color-window: #1c1c1e;
+    --color-surface: #1e1e20;
+  }
 }

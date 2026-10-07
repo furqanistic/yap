@@ -4,7 +4,7 @@ This is the single source of truth for how Yap looks and feels. Every UI change,
 
 ## Principles
 
-1. **Flat and soft.** No gradients, gloss, bevels, or heavy shadows. Depth comes from soft tints, hairline borders, and rounded corners.
+1. **Soft and legible.** Depth comes from neutral glass tints, fine optical rims, and rounded corners. Keep specular light confined to surface edges; avoid heavy shadows and decorative full-panel gradients.
 2. **Minimal.** Every element earns its place. Prefer whitespace over dividers, and fewer controls over more.
 3. **Native-feeling.** Yap should feel like a well-made macOS app on every platform: system font, translucent glass window, arrow cursor, quiet motion.
 4. **One accent.** Lime (`#bced09`) is the only brand color. Use it sparingly to show what's selected or on, and only as a fill or icon color. Never as an outline, border, or focus ring.
@@ -44,17 +44,21 @@ All colors live as CSS custom properties in [`src/styles/global.css`](src/styles
 | `--color-key` | Keycap chips in the shortcut recorder |
 | `--color-switch-thumb` | Switch knob |
 | `--color-focus` / `--color-focus-ring` | Neutral keyboard-focus outline and field ring |
-| `--color-menu` / `--color-menu-border` / `--shadow-menu` | Dropdown menus (always opaque, even in glass mode) |
+| `--color-menu` / `--color-menu-border` / `--shadow-menu` | Dense dropdown menu tint, edge, and elevation |
 | `--color-window-close` / `-pressed` / `--color-on-window-close` | Windows close button hover (red by platform convention) |
 
-## Glass (window translucency)
+## Glass (window and surface materials)
 
-Inside the Tauri window, the OS blurs the desktop behind Yap (Acrylic on Windows, vibrancy on macOS). [`src/lib/platform.ts`](src/lib/platform.ts) then sets `data-vibrancy="native"` on `<html>`, and `global.css` swaps opaque tokens for translucent tints.
+Inside the Tauri window, the OS blurs the desktop behind Yap (Acrylic on Windows, vibrancy on macOS). [`src/lib/platform.ts`](src/lib/platform.ts) then sets `data-vibrancy="native"` on `<html>`. The reusable `LiquidGlassSurface` in [`src/components/liquid-glass/`](src/components/liquid-glass/) adds theme-aware tint, edge lighting, fine rims, and optional SVG displacement of the rendered WebView backdrop.
 
-- **Sidebar** is tinted slightly grayer than the **content pane** so the two read as separate panes.
-- **Cards and fields** carry a stronger tint than the pane behind them so text stays readable.
-- **Don't add `backdrop-filter`** in glass mode. The OS already blurs, and stacking blurs looks muddy and costs performance.
+This is Yap's web implementation inspired by Liquid Glass; it is not Apple's native material API.
+
+- Use the shared `clear`, `regular`, `dense`, `interactive`, `floating`, and `sidebar` presets. The window pane stays clear; the sidebar separates slightly; settings panels, fields, selected navigation, and floating menus become progressively denser.
+- The desktop compositor owns wallpaper sampling and blur. SVG `backdrop-filter` displacement can bend pixels rendered inside the WebView when supported; it cannot guarantee access to desktop pixels outside the WebView. Capability or reduced-transparency fallback keeps the same tint, rims, and light frost without refraction.
+- Refraction maps are generated from the surface's rounded-rectangle signed distance, capped at 512 pixels per side, sliced during idle time, and rebuilt after resize settles. Revoke replaced object URLs, and do not animate the map itself.
+- Keep the central glass clear and the strongest lensing in the edge bevel. Use a subtle RGB split only as three close displacement passes. Rim highlights follow the rounded shape, with a narrow inner edge, a neutral outer definition, and a soft inset line.
 - **Every token overridden in `:root[data-vibrancy="native"]` must also be overridden in its dark-mode block.** Otherwise the light value leaks into dark mode. This exact bug once made dark-mode fields unreadable.
+- `prefers-reduced-transparency` uses a more opaque theme-aware surface. `prefers-reduced-motion` removes press scaling and material transitions.
 - In a regular browser (no glass), the same tokens fall back to opaque colors and a soft decorative glow behind the sidebar.
 
 ## Typography
@@ -105,8 +109,8 @@ Spacing should come from this scale: **2, 4, 6, 8, 10, 12, 16, 20, 24, 32**.
 ## Borders, shadows, and depth
 
 - Separate things with **1px `--color-separator` hairlines**, or just whitespace.
-- **No drop shadows** on cards, rows, or buttons. Only two things get a shadow: the switch thumb, and floating menus (`--shadow-menu`), which need to read as sitting above the page.
-- **No gradients or inner highlights.** The sidebar used to have glossy icon tiles and gradient pills, and they read as dated. Don't bring them back. The one exception is the soft radial glow behind the sidebar in browser mode (`--glow-*`), which stands in for the desktop wallpaper and disappears in the real glass window.
+- Avoid heavy drop shadows. Glass panels use a small neutral edge shadow to separate from bright wallpapers; floating menus use the stronger `--shadow-menu`, and the switch thumb keeps its existing shadow.
+- Avoid broad gradients, glossy icon tiles, and gradient pills. A narrow directional gradient is allowed only on the masked perimeter rim of a `LiquidGlassSurface`; it must follow the shape. The soft radial glow behind the sidebar in browser mode (`--glow-*`) stands in for the desktop wallpaper and disappears in the real glass window.
 
 ## Icons
 
@@ -131,13 +135,14 @@ Icons next to a visible label are decorative. The library hides them from screen
 
 - Color and background changes: **150ms `ease`**.
 - Switch thumb: **180ms `cubic-bezier(0.3, 0.7, 0.4, 1)`**.
-- Keep transitions under 200ms. No bounce, no scale-up effects, no page-transition animations.
+- Keep transitions under 200ms. Liquid Glass controls may use a restrained 1.02 press scale; no bounce or page-transition animations.
 - Any new motion beyond color fades must be disabled under `@media (prefers-reduced-motion: reduce)`.
 
 ## Interaction and accessibility
 
 - **Cursor:** `default` (arrow) on all controls, like a native app. Don't use `pointer`.
 - **Text selection:** off for UI chrome (`user-select: none` on `body`). Turn it back on for content people may copy, such as transcripts.
+- **Scrolling:** the main content pane scrolls natively with its visual scrollbar hidden; wheel, touchpad, keyboard, and programmatic scrolling remain available.
 - **Focus:** keyboard focus must be visible but **neutral, never lime**. Buttons, switches, and nav items get a 2px `--color-focus` outline. Fields get a `--color-field-border-hover` border plus a 3px `--color-focus-ring` ring. Use `:focus-visible`, so nothing shows after a mouse click.
 - **Hover:** `--color-hover` background. Selected items keep their selected style on hover.
 - **Dropdowns:** use the `Select` component, never a native `<select>`. Native popups are drawn by the OS, ignore our colors, and were unreadable in dark mode on Windows.
@@ -190,7 +195,7 @@ Reuse these before building anything new. They live in [`src/components/`](src/c
 | Do | Don't |
 |---|---|
 | Use tokens from `global.css` | Hard-code hex values in components |
-| Use flat fills and hairline borders | Add gradients, gloss, or drop shadows |
+| Use tokenized glass tints and fine shaped rims | Add broad gradients, neon borders, or heavy shadows |
 | Use lime for "selected" and "on" | Use lime for text, outlines, borders, or focus rings |
 | Use the `Select` component | Use a native `<select>` |
 | Use outline Devigner icons, imported per icon | Mix icon sets or import the package root |

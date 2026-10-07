@@ -10,6 +10,7 @@ import { getPlatform } from "@/lib/platform";
 import type { AudioLevel, InputDevice, MicTestEnded } from "@/types/audio";
 import type { DiskSpace, ModelEntry, ModelId, ModelProgressEvent, ModelStateEvent } from "@/types/models";
 import type { Settings, SettingsPatch } from "@/types/settings";
+import type { SttStatus } from "@/types/stt";
 
 export { isTauri };
 
@@ -20,6 +21,7 @@ export interface EventMap {
   "models://state": ModelStateEvent;
   "audio://level": AudioLevel;
   "audio://test-ended": MicTestEnded;
+  "stt://status": SttStatus;
 }
 
 type EventName = keyof EventMap;
@@ -180,5 +182,15 @@ export const audioApi = {
   openPrivacySettings(): Promise<void> {
     if (!isTauri()) return Promise.resolve();
     return invoke("audio_open_privacy_settings");
+  },
+};
+
+// ---------- Transcription ----------
+
+export const sttApi = {
+  /** Which model is loaded or loading. Follow `stt://status` for changes. */
+  status(): Promise<SttStatus> {
+    if (!isTauri()) return Promise.resolve({ model: null, loading: null, error: null });
+    return invoke<SttStatus>("stt_status");
   },
 };

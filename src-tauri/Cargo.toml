@@ -35,6 +35,9 @@ fs4 = "1"
 cpal = "0.18"
 rubato = "5"
 hound = "3.5"
+whisper-rs = { version = "0.16", features = ["log_backend"] }
+realfft = "3.5"
+num_cpus = "1"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
@@ -44,3 +47,7 @@ lto = true
 opt-level = 3
 panic = "abort"
 strip = true
+
+# whisper.cpp is unusably slow unoptimized, so build it optimized even in dev.
+[profile.dev.package.whisper-rs-sys]
+opt-level = 3

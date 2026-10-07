@@ -67,6 +67,14 @@ jobs:
         with:
           workspaces: src-tauri
 
+      # With the Visual Studio generator, the cmake crate drops CMake's Release
+      # optimization flags, which makes whisper.cpp ~30x slower. Restore them.
+      - name: Optimize whisper.cpp on Windows
+        if: runner.os == 'Windows'
+        run: |
+          echo "CMAKE_C_FLAGS_RELEASE=/MD /O2 /Ob2 /DNDEBUG" >> "$GITHUB_ENV"
+          echo "CMAKE_CXX_FLAGS_RELEASE=/MD /O2 /Ob2 /DNDEBUG /EHsc /utf-8" >> "$GITHUB_ENV"
+
       # `tauri::generate_context!` needs the frontend folder to exist at compile time.
       - name: Create placeholder frontend build
         run: mkdir -p dist

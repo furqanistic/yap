@@ -106,6 +106,12 @@ impl ModelManager {
         &self.dir
     }
 
+    /// Full path of a downloaded model, if it's ready to use.
+    pub fn ready_path(&self, id: &str) -> Option<PathBuf> {
+        let model = catalog::find(id)?;
+        download::is_ready(&self.dir, model).then(|| download::final_path(&self.dir, model))
+    }
+
     /// Free space compared with what downloading model `id` still needs.
     pub fn disk_space(&self, id: &str) -> Result<DiskSpace, ModelError> {
         let model = catalog::find(id).ok_or_else(|| ModelError::UnknownModel(id.into()))?;

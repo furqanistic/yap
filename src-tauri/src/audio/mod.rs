@@ -6,6 +6,7 @@
 
 pub mod capture;
 pub mod device;
+pub mod vad;
 
 use std::fmt;
 

@@ -3,6 +3,7 @@
 //! its commands in `lib.rs` with `tauri::generate_handler!`.
 
 pub mod audio;
+pub mod hotkey;
 pub mod models;
 pub mod settings;
 pub mod stt;

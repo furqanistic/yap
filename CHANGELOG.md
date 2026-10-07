@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings are saved by the Rust backend and survive restarts
 - Shared UI components: Button, Modal, ConfirmDialog, ProgressBar, Toast, EmptyState, TextField and Tag
 - Microphones are listed and recorded natively, so every device shows up without a permission prompt. "Test microphone" shows a live level meter
+- Hold-to-talk shortcut that works anywhere in Windows, including modifier-only chords like Ctrl+Win, without opening the Start menu
 - Offline transcription with Whisper. A silence gate skips audio with no speech, and common phrases Whisper invents for silence ("Thank you.") are dropped
 - Model page: download, resume, cancel, use and delete Whisper models, with a download window that shows progress, speed and time left. Downloads are checked for damage before use
 - Initial Tauri 2 + React + TypeScript project setup

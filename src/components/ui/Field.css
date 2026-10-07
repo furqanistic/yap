@@ -143,3 +143,8 @@
   border-color: var(--color-field-border-hover);
   box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
+
+/* The shortcut is being held right now (a lime fill, never an outline) */
+.field--pressed .field__key {
+  background: var(--color-primary-soft);
+}

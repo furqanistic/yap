@@ -1,11 +1,14 @@
 mod audio;
 mod commands;
+mod hotkey;
 mod models;
 mod store;
 mod stt;
 
 use tauri::{Emitter, Listener, Manager};
 
+use hotkey::chord::ChordEvent;
+use hotkey::HotkeyManager;
 use models::ModelManager;
 use store::settings::{SettingsFile, SettingsStore};
 use stt::manager::SttManager;
@@ -46,6 +49,23 @@ pub fn run() {
                 let handle = handle.clone();
                 app.listen(event, move |_| commands::stt::sync_model(&handle));
             }
+
+            // Global hold-to-talk hotkey. Follows the shortcut in settings live.
+            let hotkey_app = app.handle().clone();
+            let shortcut = app.state::<SettingsStore>().get().hold_shortcut;
+            app.manage(HotkeyManager::start(&shortcut, move |event| {
+                let name = match event {
+                    ChordEvent::Down => commands::hotkey::DOWN_EVENT,
+                    ChordEvent::Up => commands::hotkey::UP_EVENT,
+                    ChordEvent::Cancelled => commands::hotkey::CANCELLED_EVENT,
+                };
+                let _ = hotkey_app.emit(name, ());
+            }));
+            let handle = app.handle().clone();
+            app.listen(commands::settings::SETTINGS_CHANGED, move |_| {
+                let shortcut = handle.state::<SettingsStore>().get().hold_shortcut;
+                handle.state::<HotkeyManager>().set_chord(&shortcut);
+            });
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -66,6 +86,7 @@ pub fn run() {
             commands::audio::audio_debug_record_wav,
             commands::stt::stt_status,
             commands::stt::stt_transcribe_wav,
+            commands::hotkey::hotkey_status,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

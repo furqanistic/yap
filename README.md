@@ -42,6 +42,10 @@ Build a production bundle:
 npm run tauri build
 ```
 
+## How hold-to-talk works
+
+Yap detects the push-to-talk shortcut, including modifier-only chords such as Ctrl+Win, with a low-level keyboard hook (`WH_KEYBOARD_LL` on Windows). The hook only watches for the chosen shortcut and never records or sends keystrokes anywhere. Some antivirus tools flag low-level keyboard hooks in general; if yours does, allow Yap.
+
 ## Project structure
 
 ```

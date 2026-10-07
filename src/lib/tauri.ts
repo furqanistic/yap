@@ -8,6 +8,7 @@ import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getPlatform } from "@/lib/platform";
 import type { AudioLevel, InputDevice, MicTestEnded } from "@/types/audio";
+import type { HotkeyStatus } from "@/types/hotkey";
 import type { DiskSpace, ModelEntry, ModelId, ModelProgressEvent, ModelStateEvent } from "@/types/models";
 import type { Settings, SettingsPatch } from "@/types/settings";
 import type { SttStatus } from "@/types/stt";
@@ -22,6 +23,9 @@ export interface EventMap {
   "audio://level": AudioLevel;
   "audio://test-ended": MicTestEnded;
   "stt://status": SttStatus;
+  "hotkey://down": null;
+  "hotkey://up": null;
+  "hotkey://cancelled": null;
 }
 
 type EventName = keyof EventMap;
@@ -192,5 +196,15 @@ export const sttApi = {
   status(): Promise<SttStatus> {
     if (!isTauri()) return Promise.resolve({ model: null, loading: null, error: null });
     return invoke<SttStatus>("stt_status");
+  },
+};
+
+// ---------- Hotkey ----------
+
+export const hotkeyApi = {
+  /** Whether hold-to-talk is working, and why not if it isn't. */
+  status(): Promise<HotkeyStatus | null> {
+    if (!isTauri()) return Promise.resolve(null);
+    return invoke<HotkeyStatus>("hotkey_status");
   },
 };

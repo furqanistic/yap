@@ -3,6 +3,7 @@ import { SettingRow, SettingsGroup } from "@/components/settings";
 import { Button, Select, ShortcutInput, Switch, type SelectOption } from "@/components/ui";
 import { ActiveModelSelect } from "@/features/model";
 import { useAudioDevices } from "@/hooks/useAudioDevices";
+import { useHotkey } from "@/hooks/useHotkey";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useSettings } from "@/hooks/useSettings";
 import type { Settings } from "@/types/settings";
@@ -14,6 +15,7 @@ export function GeneralSettings() {
   const { settings, update: save } = useSettings();
   const { devices, error: devicesError } = useAudioDevices();
   const navigate = useNavigation();
+  const hotkey = useHotkey(settings?.holdShortcut ?? []);
 
   // Wait for the saved values so controls never flash the defaults.
   if (!settings) return null;
@@ -35,11 +37,16 @@ export function GeneralSettings() {
   return (
     <Page title="General" description="Configure how Yap looks and behaves on your system.">
       <SettingsGroup title="Recording">
-        <SettingRow title="Push-to-talk shortcut" description="Hold this shortcut to start recording.">
+        <SettingRow
+          title="Push-to-talk shortcut"
+          description="Hold this shortcut to start recording."
+          hint={hotkey.status?.error ?? undefined}
+        >
           {(a11y) => (
             <ShortcutInput
               value={settings.holdShortcut}
               onChange={(keys) => update("holdShortcut", keys)}
+              pressed={hotkey.pressed}
               {...a11y}
             />
           )}

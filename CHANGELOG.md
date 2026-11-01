@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dropdown options were unreadable in dark mode on Windows; dropdowns now use a custom menu
 - Removed the lime focus outline from fields; keyboard focus is now neutral
+- Pages now scroll when they are taller than the window, and the Advanced and About sidebar items stay visible at the default and minimum window sizes
 
 ### Added
 

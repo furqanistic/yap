@@ -2,6 +2,8 @@
   position: relative;
   display: grid;
   grid-template-columns: 220px 1fr;
+  /* Keep the row at the window height so the content pane scrolls instead of being clipped */
+  grid-template-rows: minmax(0, 1fr);
   height: 100vh;
   overflow: hidden;
   background: var(--color-window);
